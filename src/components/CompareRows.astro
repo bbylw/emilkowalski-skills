@@ -1,0 +1,369 @@
+---
+import Icon from './Icon.astro';
+---
+
+<div class="cmp" data-demo>
+  <div class="cmp__bar">
+    <p class="cmp__hint">进入视口自动播放一次</p>
+    <button type="button" class="cmp__replay" data-demo-replay>
+      <Icon name="arrows-clockwise" size={14} />
+      全部重播
+    </button>
+  </div>
+
+  <!-- 1. 层级 -->
+  <div class="cmp__row">
+    <div class="cmp__label">
+      <p class="cmp__name">层级</p>
+      <p class="cmp__desc">界面靠什么表达前后关系</p>
+    </div>
+    <div class="cmp__pair">
+      <div class="cmp__cell">
+        <div class="cmp__top"><span class="chip">常见的错</span></div>
+        <div class="cmp__stage">
+          <div class="cmp__box cmp__box--border">实色描边</div>
+        </div>
+        <p class="cmp__note">一圈同样深的灰线，所有元素平铺在同一层。</p>
+      </div>
+      <div class="cmp__cell">
+        <div class="cmp__top"><span class="chip cmp__chip-ok">更好的做法</span></div>
+        <div class="cmp__stage">
+          <div class="cmp__box cmp__box--shadow">半透明阴影</div>
+        </div>
+        <p class="cmp__note">阴影带出高度差，边界自然，深色模式下也成立。</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. 时长 -->
+  <div class="cmp__row">
+    <div class="cmp__label">
+      <p class="cmp__name">时长</p>
+      <p class="cmp__desc">位移越大，越需要时间</p>
+    </div>
+    <div class="cmp__pair">
+      <div class="cmp__cell">
+        <div class="cmp__top">
+          <span class="chip">常见的错</span>
+          <span class="cmp__tag num">160ms</span>
+        </div>
+        <div class="cmp__stage cmp__stage--tight">
+          <div class="cmp__track">
+            <span class="cmp__dot" data-anim style="--dur: 160ms"></span>
+          </div>
+        </div>
+        <p class="cmp__note">同样一段长距离，快到来不及看清就结束。</p>
+      </div>
+      <div class="cmp__cell">
+        <div class="cmp__top">
+          <span class="chip cmp__chip-ok">更好的做法</span>
+          <span class="cmp__tag num">420ms</span>
+        </div>
+        <div class="cmp__stage cmp__stage--tight">
+          <div class="cmp__track">
+            <span class="cmp__dot cmp__dot-ok" data-anim style="--dur: 420ms"></span>
+          </div>
+        </div>
+        <p class="cmp__note">按距离定时长，眼睛跟得上，也不拖沓。</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. 属性 -->
+  <div class="cmp__row">
+    <div class="cmp__label">
+      <p class="cmp__name">属性</p>
+      <p class="cmp__desc">动什么，比动多久更关键</p>
+    </div>
+    <div class="cmp__pair">
+      <div class="cmp__cell">
+        <div class="cmp__top">
+          <span class="chip">常见的错</span>
+          <span class="cmp__tag num">width</span>
+        </div>
+        <div class="cmp__stage">
+          <div class="cmp__grow" data-anim>
+            <span>内容会随着宽度重新折行，每帧都要重排。</span>
+          </div>
+        </div>
+        <p class="cmp__note">动画布局属性，掉帧就从这里开始。</p>
+      </div>
+      <div class="cmp__cell">
+        <div class="cmp__top">
+          <span class="chip cmp__chip-ok">更好的做法</span>
+          <span class="cmp__tag num">transform</span>
+        </div>
+        <div class="cmp__stage">
+          <div class="cmp__grow cmp__grow-ok" data-anim>
+            <span>宽度不变，只移动与淡入，交给合成层。</span>
+          </div>
+        </div>
+        <p class="cmp__note">只动 transform 与 opacity，视觉更稳。</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .cmp__bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding-bottom: 14px;
+  }
+
+  .cmp__hint {
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    color: var(--muted);
+  }
+
+  .cmp__replay {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 30px;
+    padding-inline: 10px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    cursor: pointer;
+    transition:
+      color 0.18s ease,
+      border-color 0.18s ease;
+  }
+
+  .cmp__replay:hover {
+    color: var(--ink);
+    border-color: var(--ink);
+  }
+
+  [data-demo-static] .cmp__replay {
+    display: none;
+  }
+
+  .cmp__row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding-block: 26px;
+    border-top: 1px solid var(--line);
+  }
+
+  .cmp__name {
+    font-size: 16px;
+    font-weight: 500;
+  }
+
+  .cmp__desc {
+    margin-top: 5px;
+    font-size: 13px;
+    color: var(--muted);
+    max-width: 24ch;
+  }
+
+  .cmp__pair {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .cmp__cell {
+    display: grid;
+    gap: 10px;
+    align-content: start;
+  }
+
+  .cmp__chip-ok {
+    border-color: var(--accent);
+    color: var(--accent-ink);
+  }
+
+  .cmp__top {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .cmp__tag {
+    font-size: 11.5px;
+    color: var(--muted);
+  }
+
+  .cmp__stage {
+    display: flex;
+    align-items: center;
+    min-height: 96px;
+    padding: 14px;
+    border-radius: var(--radius-card);
+    background: var(--sunken);
+    border: 1px solid var(--line);
+  }
+
+  .cmp__stage--tight {
+    min-height: 60px;
+    padding-block: 0;
+  }
+
+  .cmp__note {
+    font-size: 12.5px;
+    line-height: 1.6;
+    color: var(--muted);
+  }
+
+  /* 1. 层级 */
+  .cmp__box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 60px;
+    border-radius: 12px;
+    font-size: 13px;
+    background: var(--surface);
+    transition:
+      transform 0.3s cubic-bezier(0, 0, 0.58, 1),
+      box-shadow 0.3s cubic-bezier(0, 0, 0.58, 1);
+  }
+
+  .cmp__box--border {
+    border: 1px solid var(--line-strong);
+    color: var(--muted);
+  }
+
+  .cmp__box--shadow {
+    border: 1px solid transparent;
+    color: var(--ink);
+    box-shadow:
+      0 1px 2px oklch(0.25 0.02 265 / 0.06),
+      0 10px 24px oklch(0.25 0.02 265 / 0.1);
+  }
+
+  @media (hover: hover) {
+    .cmp__box:hover {
+      transform: translateY(-3px);
+    }
+
+    .cmp__box--shadow:hover {
+      box-shadow:
+        0 2px 4px oklch(0.25 0.02 265 / 0.08),
+        0 20px 40px oklch(0.25 0.02 265 / 0.14);
+    }
+  }
+
+  /* 2. 时长 */
+  .cmp__track {
+    container-type: inline-size;
+    position: relative;
+    width: 100%;
+    height: 26px;
+    border-radius: 999px;
+    background: color-mix(in oklab, var(--line) 55%, transparent);
+  }
+
+  .cmp__dot {
+    position: absolute;
+    left: 3px;
+    top: 3px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: color-mix(in oklab, var(--ink) 62%, transparent);
+    --travel: calc(100cqw - 26px);
+  }
+
+  .cmp__dot-ok {
+    background: var(--accent);
+  }
+
+  .cmp__dot.is-run {
+    animation: cmp-slide var(--dur) cubic-bezier(0, 0, 0.58, 1) 100ms both;
+  }
+
+  @keyframes cmp-slide {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(var(--travel));
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cmp__dot.is-run {
+      animation: none;
+      transform: translateX(var(--travel));
+    }
+  }
+
+  /* 3. 属性 */
+  .cmp__grow {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 10px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: var(--ink-soft);
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  .cmp__grow.is-run {
+    animation: cmp-width 900ms cubic-bezier(0.16, 1, 0.3, 1) 100ms both;
+  }
+
+  .cmp__grow-ok.is-run {
+    animation: cmp-transform 900ms cubic-bezier(0.16, 1, 0.3, 1) 100ms both;
+  }
+
+  @keyframes cmp-width {
+    from {
+      width: 22%;
+      opacity: 0.4;
+    }
+    to {
+      width: 100%;
+      opacity: 1;
+    }
+  }
+
+  @keyframes cmp-transform {
+    from {
+      transform: translateY(-10px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cmp__grow.is-run,
+    .cmp__grow-ok.is-run {
+      animation: none;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .cmp__row {
+      grid-template-columns: 3fr 9fr;
+      gap: 28px;
+    }
+
+    .cmp__pair {
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+    }
+  }
+</style>
+
+<script>
+  import '../scripts/demos';
+</script>

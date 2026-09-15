@@ -1,0 +1,54 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+---
+
+<Base title="页面不存在">
+  <section class="nf">
+    <div class="shell nf__inner">
+      <p class="label num">404</p>
+      <h1 class="nf__title">这个地址没有内容</h1>
+      <p class="nf__body">
+        链接可能已经改动，或者从来就不存在。回首页看概览，或者直接进组合手册挑一条流水线。
+      </p>
+      <div class="nf__links">
+        <a class="btn btn-primary" href="/">回到首页</a>
+        <a class="btn btn-ghost" href="/playbook">
+          看组合手册
+          <Icon name="arrow-right" size={14} />
+        </a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .nf {
+    padding-block: 96px 120px;
+  }
+
+  .nf__inner {
+    max-width: 56ch;
+  }
+
+  .nf__title {
+    margin-top: 16px;
+    font-size: clamp(30px, 4.5vw, 48px);
+    line-height: 1.1;
+    letter-spacing: -0.035em;
+  }
+
+  .nf__body {
+    margin-top: 16px;
+    font-size: 15px;
+    line-height: 1.75;
+    color: var(--muted);
+  }
+
+  .nf__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 28px;
+  }
+</style>

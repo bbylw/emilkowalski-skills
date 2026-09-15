@@ -1,0 +1,286 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import CopyButton from '../components/CopyButton.astro';
+import ComboConsole from '../components/ComboConsole.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import { playbooks, stages } from '../data/playbooks';
+import { skills } from '../data/skills';
+import { site } from '../data/site';
+
+const titleOf = (slug: string) => skills.find((s) => s.slug === slug)?.title ?? slug;
+
+const byStage = stages.map((stage) => {
+  const counts = new Map<string, number>();
+  for (const playbook of playbooks) {
+    for (const step of playbook.chain) {
+      if (step.stage !== stage.id) continue;
+      counts.set(step.slug, (counts.get(step.slug) ?? 0) + 1);
+    }
+  }
+  return {
+    ...stage,
+    items: [...counts.entries()].sort((a, b) => b[1] - a[1]),
+  };
+});
+
+const covered = new Set(playbooks.flatMap((p) => p.chain.map((c) => c.slug)));
+---
+
+<Base title="组合手册" active="/playbook">
+  <Breadcrumbs items={[{ name: '首页', href: '/' }, { name: '组合手册' }]} />
+  <section class="page">
+    <div class="shell">
+      <header class="head reveal">
+        <p class="eyebrow">共 {playbooks.length} 条</p>
+        <h1 class="head__title">组合手册</h1>
+        <p class="head__body">
+          每个 skill 只覆盖链路上的一段：有的负责把需求说准，有的负责做出来，有的负责挑错。
+          把它们按顺序接起来，智能体才真正拥有一套流程，而不是一堆零散的技巧。
+        </p>
+      </header>
+
+      <section class="console">
+        <ComboConsole />
+      </section>
+
+      <section class="matrix">
+        <header class="matrix__head reveal">
+          <h2 class="matrix__title">按阶段看覆盖</h2>
+          <p class="matrix__note">
+            {skills.length} 个 skill 中有 {covered.size} 个出现在这 {playbooks.length} 条组合里。同一个 skill
+            在不同组合里可能站在不同阶段，这正是它能复用的原因。
+          </p>
+        </header>
+
+        <div class="matrix__rows">
+          {
+            byStage.map((stage) => (
+              <div class="mstage">
+                <div class="mstage__label">
+                  <p class="mstage__name">{stage.label}</p>
+                  <p class="mstage__note">{stage.note}</p>
+                </div>
+                <div class="mstage__items">
+                  {stage.items.length === 0 && <p class="mstage__empty">这一阶段的收尾工作由前一步直接完成。</p>}
+                  {stage.items.map(([slug, count]) => (
+                    <a class="mpill" href={`/skills/${slug}`}>
+                      <span class="num mpill__slug">{slug}</span>
+                      <span class="mpill__title">{titleOf(slug)}</span>
+                      <span class="mpill__count num">{count}</span>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            ))
+          }
+        </div>
+      </section>
+
+      <section class="cta">
+        <div class="cta__copy">
+          <h2 class="cta__title">先装上，再挑一条跑一遍</h2>
+          <p class="cta__body">
+            装完之后，从上面选一条最接近你手头工作的组合，把提示词序列按顺序丢给智能体。
+            第一次就能看出差别。
+          </p>
+        </div>
+        <div class="cta__cmd">
+          <p class="cmd">
+            <span class="prompt">$</span>
+            <span id="playbook-install">{site.install}</span>
+          </p>
+          <div class="cta__actions">
+            <CopyButton from="#playbook-install" label="复制命令" />
+            <a class="btn btn-ghost btn-sm" href="/skills">
+              看全部 Skills
+              <Icon name="arrow-right" size={14} />
+            </a>
+          </div>
+        </div>
+      </section>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .page {
+    padding-block: 48px 40px;
+  }
+
+  .head {
+    max-width: 64ch;
+    padding-bottom: 44px;
+  }
+
+  .head__title {
+    margin-top: 14px;
+    font-size: clamp(34px, 5vw, 58px);
+    line-height: 1.08;
+    letter-spacing: -0.035em;
+  }
+
+  .head__body {
+    margin-top: 18px;
+    font-size: 15px;
+    line-height: 1.8;
+    color: var(--muted);
+  }
+
+  .console {
+    padding-top: 36px;
+    border-top: 1px solid var(--line);
+  }
+
+  .matrix {
+    padding-top: 64px;
+  }
+
+  .matrix__head {
+    display: grid;
+    gap: 12px;
+    margin-bottom: 30px;
+    max-width: 64ch;
+  }
+
+  .matrix__title {
+    font-size: clamp(24px, 3vw, 34px);
+    letter-spacing: -0.03em;
+  }
+
+  .matrix__note {
+    font-size: 14px;
+    line-height: 1.75;
+    color: var(--muted);
+  }
+
+  .matrix__rows {
+    display: grid;
+    gap: 0;
+  }
+
+  .mstage {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+    padding-block: 22px;
+    border-top: 1px solid var(--line);
+  }
+
+  .mstage__name {
+    font-size: 16px;
+  }
+
+  .mstage__note {
+    margin-top: 5px;
+    font-size: 12.5px;
+    line-height: 1.6;
+    color: var(--muted);
+    max-width: 30ch;
+  }
+
+  .mstage__items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-content: start;
+  }
+
+  .mstage__empty {
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .mpill {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    padding: 8px 12px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--surface);
+    transition:
+      border-color 0.18s ease,
+      transform 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .mpill:hover {
+    border-color: var(--accent);
+  }
+
+  @media (hover: hover) {
+    .mpill:hover {
+      transform: translateY(-1px);
+    }
+  }
+
+  .mpill__slug {
+    font-size: 12.5px;
+    color: var(--accent-ink);
+  }
+
+  .mpill__title {
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+
+  .mpill__count {
+    font-size: 11px;
+    color: var(--muted);
+    padding-left: 9px;
+    border-left: 1px solid var(--line);
+  }
+
+  .cta {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 26px;
+    margin-top: 64px;
+    padding: 30px;
+    background: var(--sunken);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-card);
+  }
+
+  .cta__title {
+    font-size: clamp(22px, 2.8vw, 32px);
+    letter-spacing: -0.03em;
+  }
+
+  .cta__body {
+    margin-top: 12px;
+    font-size: 14px;
+    line-height: 1.75;
+    color: var(--muted);
+    max-width: 46ch;
+  }
+
+  .cta__cmd {
+    display: grid;
+    gap: 14px;
+    align-content: start;
+  }
+
+  .cta__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  @media (min-width: 900px) {
+    .page {
+      padding-block: 72px 40px;
+    }
+
+    .mstage {
+      grid-template-columns: 3fr 9fr;
+      gap: 32px;
+    }
+
+    .cta {
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      padding: 40px;
+    }
+  }
+</style>

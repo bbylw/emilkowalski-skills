@@ -1,0 +1,196 @@
+---
+import Icon from './Icon.astro';
+---
+
+<figure class="race card" data-demo>
+  <div class="race__head">
+    <div>
+      <p class="race__title">入场缓动</p>
+      <p class="race__sub">同一段位移，两条曲线</p>
+    </div>
+    <button type="button" class="race__replay" data-demo-replay>
+      <Icon name="arrows-clockwise" size={14} />
+      重播
+    </button>
+  </div>
+
+  <div class="race__rows">
+    <div class="race__row">
+      <div class="race__meta">
+        <span class="chip">错的</span>
+        <span class="race__curve num">ease-in</span>
+      </div>
+      <div class="race__track">
+        <span class="race__dot" data-anim style="--ease: cubic-bezier(0.42, 0, 1, 1)"></span>
+      </div>
+      <p class="race__why">起步迟疑，结尾突然加速。</p>
+    </div>
+
+    <div class="race__row">
+      <div class="race__meta">
+        <span class="chip race__chip-ok">对的</span>
+        <span class="race__curve num">ease-out</span>
+      </div>
+      <div class="race__track">
+        <span class="race__dot race__dot-ok" data-anim style="--ease: cubic-bezier(0, 0, 0.58, 1)"></span>
+      </div>
+      <p class="race__why">立刻响应，然后减速停稳。</p>
+    </div>
+  </div>
+
+  <figcaption class="race__foot">
+    入场元素应当先快后慢地落位。用反了曲线，界面就会慢半拍，而你说不出为什么。
+  </figcaption>
+</figure>
+
+<style>
+  .race {
+    padding: 20px;
+    box-shadow: var(--shadow-card);
+  }
+
+  .race__head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .race__title {
+    font-size: 15px;
+    font-weight: 500;
+  }
+
+  .race__sub {
+    margin-top: 4px;
+    font-size: 12.5px;
+    color: var(--muted);
+  }
+
+  .race__replay {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 30px;
+    padding-inline: 10px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    cursor: pointer;
+    transition:
+      color 0.18s ease,
+      border-color 0.18s ease;
+  }
+
+  .race__replay:hover {
+    color: var(--ink);
+    border-color: var(--ink);
+  }
+
+  [data-demo-static] .race__replay {
+    display: none;
+  }
+
+  .race__rows {
+    display: grid;
+    gap: 18px;
+    padding-block: 20px;
+  }
+
+  .race__meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .race__chip-ok {
+    border-color: var(--accent);
+    color: var(--accent-ink);
+  }
+
+  .race__curve {
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .race__track {
+    container-type: inline-size;
+    position: relative;
+    height: 34px;
+    border-radius: 8px;
+    background: var(--sunken);
+    border: 1px solid var(--line);
+    overflow: hidden;
+  }
+
+  .race__track::after {
+    content: '';
+    position: absolute;
+    right: 10px;
+    top: 6px;
+    bottom: 6px;
+    width: 1px;
+    background: var(--line-strong);
+  }
+
+  .race__dot {
+    position: absolute;
+    left: 8px;
+    top: 50%;
+    width: 20px;
+    height: 20px;
+    margin-top: -10px;
+    border-radius: 6px;
+    background: color-mix(in oklab, var(--ink) 62%, transparent);
+    --travel: calc(100cqw - 46px);
+  }
+
+  .race__dot-ok {
+    background: var(--accent);
+  }
+
+  .race__dot.is-run {
+    animation: race-slide 1000ms var(--ease) 120ms both;
+  }
+
+  @keyframes race-slide {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(var(--travel));
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .race__dot.is-run {
+      animation: none;
+      transform: translateX(var(--travel));
+    }
+  }
+
+  .race__why {
+    margin-top: 8px;
+    font-size: 12.5px;
+    color: var(--muted);
+  }
+
+  .race__foot {
+    padding-top: 14px;
+
+    border-top: 1px solid var(--line);
+    font-size: 12.5px;
+    line-height: 1.65;
+    color: var(--muted);
+  }
+</style>
+
+<script>
+  import '../scripts/demos';
+</script>

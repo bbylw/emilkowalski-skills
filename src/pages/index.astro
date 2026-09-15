@@ -1,0 +1,417 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import MotionRace from '../components/MotionRace.astro';
+import CompareRows from '../components/CompareRows.astro';
+import SkillBrowser from '../components/SkillBrowser.astro';
+import ComboConsole from '../components/ComboConsole.astro';
+import CopyButton from '../components/CopyButton.astro';
+import { site } from '../data/site';
+import { skills } from '../data/skills';
+import { siVercel, siLinear, siApple, siExpo, siSwift } from 'simple-icons';
+
+const logos = [siVercel, siLinear, siApple, siExpo, siSwift];
+---
+
+<Base>
+  <!-- 1. Hero -->
+  <section class="hero">
+    <div class="shell hero__grid">
+      <div class="hero__copy">
+        <h1 class="hero__title">
+          给智能体补上<span class="hero__accent">品味</span>
+        </h1>
+        <p class="hero__sub">
+          {skills.length} 个 skill 把动效与界面的判断标准写清楚，让 AI 不再临场发挥。
+        </p>
+        <div class="hero__cta">
+          <a class="btn btn-primary" href="#install">安装 skills</a>
+          <a class="btn btn-ghost" href="/playbook">看组合手册</a>
+        </div>
+      </div>
+
+      <div class="hero__device">
+        <MotionRace />
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. 出处 -->
+  <section class="band prov">
+    <div class="shell prov__inner">
+      <p class="label prov__label">经验沉淀自</p>
+      <ul class="prov__logos">
+        {
+          logos.map((logo) => (
+            <li>
+              <svg viewBox="0 0 24 24" width="21" height="21" fill="currentColor" role="img" aria-label={logo.title}>
+                <path d={logo.path} />
+              </svg>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- 3. 对照 -->
+  <section class="band sec">
+    <div class="shell taste">
+      <div class="taste__lead reveal">
+        <p class="eyebrow">为什么要用它</p>
+        <h2 class="taste__title">智能体缺的不是能力，是品味</h2>
+        <p class="taste__body">
+          智能体在为某一处动效挑选配料时常常选错：本该用 ease-out 的入场，却配了 ease-in；
+          本该用半透明阴影建立层级，却给了一圈实色描边。
+        </p>
+        <p class="taste__body">
+          这些细节会不断累积，最后决定你的界面是惊艳，还是平平无奇。下面三处是最常见的错法，
+          右边是同一件事的另一种做法。
+        </p>
+        <a class="link-underline taste__link" href="/skills/emil-design-eng">
+          阅读总纲里的规则
+          <Icon name="arrow-right" size={14} />
+        </a>
+      </div>
+
+      <div class="taste__rows">
+        <CompareRows />
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. 引文 -->
+  <section class="band quote">
+    <div class="shell quote__inner reveal">
+      <blockquote class="quote__text">
+        去学编程、学设计，或在任何其他领域沉淀专业能力吧。AI 不会取代这种专业能力，
+        它只会放大你能从中获得的成果。
+      </blockquote>
+      <p class="quote__by">Emil Kowalski · skills 作者</p>
+    </div>
+  </section>
+
+  <!-- 5. Skills 浏览 -->
+  <section class="band sec">
+    <div class="shell">
+      <header class="sec__head reveal">
+        <div>
+          <p class="eyebrow">共 {skills.length} 个</p>
+          <h2 class="sec__title">一个 skill 只管一段事</h2>
+        </div>
+        <p class="sec__body">
+          它们合起来覆盖了从立意、构建、审查到收尾的整条链路。点开任意一个，看它具体做什么、
+          该在什么时候叫它。
+        </p>
+      </header>
+
+      <div class="sec__wide">
+        <SkillBrowser />
+      </div>
+
+      <p class="sec__more">
+        <a class="link-underline" href="/skills">打开完整列表</a>
+      </p>
+    </div>
+  </section>
+
+  <!-- 6. 组合 -->
+  <section class="band sec">
+    <div class="shell">
+      <header class="sec__head reveal">
+        <div>
+          <p class="eyebrow">组合</p>
+          <h2 class="sec__title">单独用是技巧，串起来才是流程</h2>
+        </div>
+        <p class="sec__body">
+          单个 skill 只解决链条上的一段。差距出现在你把它们接起来的时候：先把需求说准，
+          再做出来，最后按同一套规则检查一遍。选一个场景，看这条链是怎么走的。
+        </p>
+      </header>
+
+      <div class="sec__wide">
+        <ComboConsole />
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. 安装 -->
+  <section class="band sec" id="install">
+    <div class="shell">
+      <header class="sec__head reveal">
+        <div>
+          <p class="eyebrow">安装</p>
+          <h2 class="sec__title">一条命令，全部就位</h2>
+        </div>
+        <p class="sec__body">
+          装完之后，在你的智能体里直接说「用 animate 做这个展开」即可。不需要额外配置，
+          也不需要记住这份清单。
+        </p>
+      </header>
+
+      <div class="install">
+        <div class="install__cmd">
+          <p class="cmd">
+            <span class="prompt">$</span>
+            <span id="install-cmd">{site.install}</span>
+          </p>
+          <CopyButton from="#install-cmd" label="复制命令" />
+        </div>
+
+        <ul class="install__notes">
+          <li>
+            <p class="install__k">装在哪里</p>
+            <p class="install__v">写入当前项目的 skills 目录，随代码一起进版本库，团队共享同一套标准。</p>
+          </li>
+          <li>
+            <p class="install__k">什么时候生效</p>
+            <p class="install__v">下次对话即可调用。提到 skill 名字，或直接描述你要做的事。</p>
+          </li>
+          <li>
+            <p class="install__k">想跟进更新</p>
+            <p class="install__v">
+              <a class="link-underline" href={site.subscribe} target="_blank" rel="noreferrer">
+                订阅作者的资讯简报
+              </a>
+              ，新 skill 与改动都会第一时间发出来。
+            </p>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  /* ---- hero ---- */
+  .hero {
+    padding-block: 44px 56px;
+  }
+
+  .hero__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+    align-items: center;
+  }
+
+  .hero__title {
+    font-size: clamp(38px, 6.2vw, 76px);
+    line-height: 1.04;
+    letter-spacing: -0.035em;
+    font-weight: 500;
+  }
+
+  .hero__accent {
+    color: var(--accent-ink);
+  }
+
+  .hero__sub {
+    margin-top: 20px;
+    max-width: 30ch;
+    font-size: clamp(15px, 1.4vw, 17.5px);
+    line-height: 1.65;
+    color: var(--muted);
+  }
+
+  .hero__cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 30px;
+  }
+
+  /* ---- 出处 ---- */
+  .prov {
+    padding-block: 22px;
+  }
+
+  .prov__inner {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    flex-wrap: wrap;
+  }
+
+  .prov__label {
+    margin: 0;
+    flex: none;
+  }
+
+  .prov__logos {
+    display: flex;
+    align-items: center;
+    gap: 26px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    color: var(--muted);
+  }
+
+  .prov__logos svg {
+    display: block;
+  }
+
+  /* ---- 通用分节 ---- */
+  .sec {
+    padding-block: 72px;
+  }
+
+  .sec__head {
+    display: grid;
+    gap: 14px;
+    margin-bottom: 40px;
+    max-width: 68ch;
+  }
+
+  .sec__title {
+    margin-top: 12px;
+    font-size: clamp(27px, 3.6vw, 44px);
+    line-height: 1.14;
+    letter-spacing: -0.03em;
+  }
+
+  .sec__body {
+    font-size: 14.5px;
+    line-height: 1.75;
+    color: var(--muted);
+    max-width: 62ch;
+  }
+
+  .sec__more {
+    margin-top: 28px;
+    font-size: 14px;
+  }
+
+  /* ---- 对照 ---- */
+  .taste {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .taste__title {
+    margin-top: 12px;
+    font-size: clamp(27px, 3.6vw, 44px);
+    line-height: 1.14;
+    letter-spacing: -0.03em;
+  }
+
+  .taste__body {
+    margin-top: 16px;
+    font-size: 14.5px;
+    line-height: 1.8;
+    color: var(--muted);
+    max-width: 40ch;
+  }
+
+  .taste__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin-top: 22px;
+    font-size: 14px;
+    color: var(--ink);
+  }
+
+  /* ---- 引文 ---- */
+  .quote {
+    padding-block: 84px;
+  }
+
+  .quote__inner {
+    display: grid;
+    gap: 20px;
+  }
+
+  .quote__text {
+    margin: 0;
+    max-width: 30ch;
+    font-size: clamp(24px, 3.4vw, 40px);
+    line-height: 1.32;
+    letter-spacing: -0.025em;
+    font-weight: 450;
+    text-wrap: balance;
+  }
+
+  .quote__by {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  /* ---- 安装 ---- */
+  .install {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .install__cmd {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .install__cmd .cmd {
+    flex: 1 1 320px;
+  }
+
+  .install__notes {
+    display: grid;
+    gap: 18px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .install__k {
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .install__v {
+    margin-top: 5px;
+    font-size: 13.5px;
+    line-height: 1.7;
+    color: var(--muted);
+    max-width: 52ch;
+  }
+
+  @media (min-width: 900px) {
+    .hero {
+      padding-block: 64px 84px;
+    }
+
+    .hero__grid {
+      grid-template-columns: 1.02fr 1fr;
+      gap: 56px;
+    }
+
+    .taste {
+      grid-template-columns: 4fr 8fr;
+      gap: 48px;
+    }
+
+    .taste__lead {
+      position: sticky;
+      top: 104px;
+      align-self: start;
+    }
+
+    .quote__inner {
+      padding-left: 8vw;
+    }
+
+    .install {
+      grid-template-columns: 1fr 1fr;
+      gap: 56px;
+      align-items: start;
+    }
+
+    .sec {
+      padding-block: 88px;
+    }
+  }
+</style>

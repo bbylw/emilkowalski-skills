@@ -1,0 +1,25 @@
+---
+interface Crumb {
+  name: string;
+  href?: string;
+}
+
+interface Props {
+  items: Crumb[];
+}
+
+const { items } = Astro.props;
+const site = Astro.site ?? new URL(Astro.url.origin);
+const json = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: items.map((item, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: item.name,
+    ...(item.href ? { item: new URL(item.href, site).href } : {}),
+  })),
+};
+---
+
+<script type="application/ld+json" is:inline set:html={JSON.stringify(json)} />

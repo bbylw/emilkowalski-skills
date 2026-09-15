@@ -1,0 +1,410 @@
+---
+import CopyButton from './CopyButton.astro';
+import { playbooks, stages, type Stage } from '../data/playbooks';
+
+const stageLabel = (id: Stage) => stages.find((s) => s.id === id)?.label ?? id;
+const first = playbooks[0]!;
+---
+
+<div class="cc" data-tabs>
+  <div class="cc__list" role="tablist" aria-label="组合场景">
+    {
+      playbooks.map((p) => (
+        <button
+          type="button"
+          role="tab"
+          id={`ctab-${p.id}`}
+          aria-controls={`cpanel-${p.id}`}
+          aria-selected={p.id === first.id ? 'true' : 'false'}
+          data-tab={p.id}
+          class:list={['cc__tab', { 'is-active': p.id === first.id }]}
+        >
+          <span class="cc__tab-title">{p.title}</span>
+          <span class="cc__tab-scene">{p.scene}</span>
+        </button>
+      ))
+    }
+  </div>
+
+  <div class="cc__main">
+    {
+      playbooks.map((p) => (
+        <div
+          role="tabpanel"
+          id={`cpanel-${p.id}`}
+          aria-labelledby={`ctab-${p.id}`}
+          data-panel={p.id}
+          class:list={['cc__panel', { 'is-active': p.id === first.id }]}
+          hidden={p.id !== first.id}
+        >
+          <div class="cc__intro">
+            <p class="cc__question">{p.question}</p>
+            <p class="cc__scene">{p.scene}</p>
+          </div>
+
+          <ol class="chain">
+            {p.chain.map((step, i) => (
+              <>
+                <li class="chain__node" style={`--i:${i}`}>
+                  <span class="chain__stage">{stageLabel(step.stage)}</span>
+                  <p class="chain__skill num">{step.slug}</p>
+                  <p class="chain__role">{step.role}</p>
+                  <p class="chain__out">
+                    <span class="chain__out-label">产出</span>
+                    {step.output}
+                  </p>
+                </li>
+                {i < p.chain.length - 1 && (
+                  <li class="chain__link" aria-hidden="true">
+                    <span class="chain__chev" />
+                  </li>
+                )}
+              </>
+            ))}
+          </ol>
+
+          <div class="cc__split">
+            <div class="cc__box">
+              <p class="cc__box-label">只用其中一个</p>
+              <p class="cc__box-text">{p.soloLimit}</p>
+            </div>
+            <div class="cc__box cc__box--gain">
+              <p class="cc__box-label">串起来之后</p>
+              <p class="cc__box-text">{p.gain}</p>
+            </div>
+          </div>
+
+          <div class="cc__prompts">
+            <div class="cc__prompts-head">
+              <p class="cc__box-label">提示词序列</p>
+              <CopyButton from={`#prompts-${p.id}`} />
+            </div>
+            <pre class="cc__pre" id={`prompts-${p.id}`}>{p.prompts.map((t, i) => `${i + 1}. ${t}`).join('\n')}</pre>
+          </div>
+        </div>
+      ))
+    }
+  </div>
+</div>
+
+<style>
+  .cc {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .cc__list {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: thin;
+    padding-bottom: 2px;
+  }
+
+  .cc__tab {
+    flex: none;
+    scroll-snap-align: start;
+    display: grid;
+    gap: 5px;
+    text-align: left;
+    max-width: 260px;
+    padding: 11px 14px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-card);
+    background: transparent;
+    cursor: pointer;
+    transition:
+      border-color 0.18s ease,
+      background-color 0.18s ease;
+  }
+
+  .cc__tab:hover {
+    border-color: var(--line-strong);
+    background: var(--sunken);
+  }
+
+  .cc__tab.is-active {
+    border-color: var(--ink);
+    background: var(--surface);
+  }
+
+  .cc__tab-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink);
+  }
+
+  .cc__tab-scene {
+    font-size: 12px;
+    line-height: 1.55;
+    color: var(--muted);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .cc__panel {
+    display: none;
+  }
+
+  .cc__panel.is-active {
+    display: block;
+  }
+
+  .cc__intro {
+    display: grid;
+    gap: 8px;
+    padding-bottom: 22px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .cc__question {
+    font-size: clamp(20px, 2.4vw, 27px);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1.3;
+  }
+
+  .cc__scene {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--muted);
+    max-width: 58ch;
+  }
+
+  /* ---- 链路 ---- */
+  .chain {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .chain__node {
+    position: relative;
+    padding: 18px 0 18px 20px;
+    border-left: 1px solid var(--line-strong);
+  }
+
+  .chain__node::before {
+    content: '';
+    position: absolute;
+    left: -5px;
+    top: 24px;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--paper);
+    box-shadow: 0 0 0 2px var(--accent);
+  }
+
+  .cc__panel.is-active .chain__node {
+    animation: chain-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: calc(var(--i) * 90ms + 40ms);
+  }
+
+  @keyframes chain-in {
+    from {
+      opacity: 0;
+      transform: translateX(-8px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cc__panel.is-active .chain__node {
+      animation: none;
+    }
+  }
+
+  .chain__stage {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent-ink);
+  }
+
+  .chain__skill {
+    margin-top: 8px;
+    font-size: 15.5px;
+    color: var(--ink);
+  }
+
+  .chain__role {
+    margin-top: 6px;
+    font-size: 13.5px;
+    line-height: 1.7;
+    color: var(--ink-soft);
+    max-width: 46ch;
+  }
+
+  .chain__out {
+    margin-top: 8px;
+    font-size: 12.5px;
+    line-height: 1.6;
+    color: var(--muted);
+  }
+
+  .chain__out-label {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-right: 8px;
+  }
+
+  .chain__link {
+    display: none;
+  }
+
+  /* ---- 对照 ---- */
+  .cc__split {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+    margin-top: 26px;
+  }
+
+  .cc__box {
+    padding: 16px 18px;
+    border-radius: var(--radius-card);
+    background: var(--sunken);
+    border: 1px solid var(--line);
+  }
+
+  .cc__box--gain {
+    background: var(--accent-soft);
+    border-color: color-mix(in oklab, var(--accent) 32%, transparent);
+  }
+
+  .cc__box-label {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  .cc__box--gain .cc__box-label {
+    color: var(--accent-ink);
+  }
+
+  .cc__box-text {
+    font-size: 13.5px;
+    line-height: 1.75;
+    color: var(--ink-soft);
+  }
+
+  /* ---- 提示词 ---- */
+  .cc__prompts {
+    margin-top: 26px;
+    padding: 16px 18px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-card);
+    background: var(--surface);
+  }
+
+  .cc__prompts-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .cc__prompts-head .cc__box-label {
+    margin-bottom: 0;
+  }
+
+  .cc__pre {
+    margin: 12px 0 0;
+    padding: 0;
+    font-size: 12.5px;
+    line-height: 1.85;
+    color: var(--ink-soft);
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  @media (min-width: 900px) {
+    .cc {
+      grid-template-columns: 300px 1fr;
+      gap: 32px;
+      align-items: start;
+    }
+
+    .cc__list {
+      display: grid;
+      gap: 4px;
+      overflow: visible;
+      position: sticky;
+      top: 88px;
+    }
+
+    .cc__tab {
+      max-width: none;
+      border: 0;
+      border-radius: 10px;
+      padding: 10px 12px;
+    }
+
+    .cc__tab.is-active {
+      background: var(--sunken);
+      box-shadow: inset 2px 0 0 var(--accent);
+    }
+
+    .cc__split {
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+  }
+
+  /* 三列链路需要足够宽度，否则竖排更易读 */
+  @media (min-width: 1120px) {
+    .chain {
+      grid-template-columns: 1fr 28px 1fr 28px 1fr;
+      align-items: start;
+    }
+
+    .chain__node {
+      padding: 20px 0 0;
+      border-left: 0;
+      border-top: 1px solid var(--line-strong);
+    }
+
+    .chain__node::before {
+      left: 0;
+      top: -5px;
+    }
+
+    .chain__link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding-top: 20px;
+    }
+
+    .chain__chev {
+      width: 7px;
+      height: 7px;
+      border-top: 1px solid var(--accent);
+      border-right: 1px solid var(--accent);
+      transform: rotate(45deg);
+      opacity: 0.8;
+    }
+  }
+</style>
+
+<script>
+  import '../scripts/tabs';
+</script>

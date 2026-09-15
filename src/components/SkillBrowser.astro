@@ -1,0 +1,383 @@
+---
+import Icon from './Icon.astro';
+import { skills, groupLabel } from '../data/skills';
+
+const first = skills[0]!;
+---
+
+<div class="sb" data-tabs>
+  <div class="sb__list" role="tablist" aria-label="Skills 列表" data-browser-list>
+    {
+      skills.map((skill) => (
+        <button
+          type="button"
+          role="tab"
+          id={`tab-${skill.slug}`}
+          aria-controls={`panel-${skill.slug}`}
+          aria-selected={skill.slug === first.slug ? 'true' : 'false'}
+          data-tab={skill.slug}
+          class:list={['sb__tab', { 'is-active': skill.slug === first.slug }]}
+        >
+          <span class="sb__tab-name">{skill.name}</span>
+          <span class="sb__tab-title">{skill.title}</span>
+        </button>
+      ))
+    }
+  </div>
+
+  <div class="sb__panels">
+    {
+      skills.map((skill) => (
+        <article
+          role="tabpanel"
+          id={`panel-${skill.slug}`}
+          aria-labelledby={`tab-${skill.slug}`}
+          data-panel={skill.slug}
+          class:list={['sb__panel', { 'is-active': skill.slug === first.slug }]}
+          hidden={skill.slug !== first.slug}
+        >
+          <header class="sb__head">
+            <div class="sb__titles">
+              <h3 class="sb__title">{skill.title}</h3>
+              <p class="sb__mono num">{skill.name}</p>
+            </div>
+            <span class="chip">{groupLabel(skill.group)}</span>
+          </header>
+
+          <p class="sb__summary">{skill.summary}</p>
+
+          <div class="sb__cols">
+            <div class="sb__col">
+              <p class="sb__col-label">什么时候用它</p>
+              <ul class="sb__ul">
+                {skill.when.map((w) => (
+                  <li>{w}</li>
+                ))}
+              </ul>
+            </div>
+            <div class="sb__col">
+              <p class="sb__col-label">它具体做什么</p>
+              <dl class="sb__dl">
+                {skill.does.map((d) => (
+                  <div class="sb__dl-row">
+                    <dt>{d.k}</dt>
+                    <dd>{d.v}</dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
+          </div>
+
+          <div class="sb__usage">
+            <p class="sb__col-label">可以这样提要求</p>
+            <p class="cmd sb__cmd">
+              <span class="prompt">›</span>
+              <span>{skill.prompt}</span>
+            </p>
+          </div>
+
+          <footer class="sb__foot">
+            <div class="sb__pairs">
+              <span class="sb__col-label">常与它组合</span>
+              <div class="sb__pair-row">
+                {skill.pairs.map((slug) => (
+                  <button type="button" class="sb__pair" data-goto={slug}>
+                    {slug}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <a href={`/skills/${skill.slug}`} class="sb__more">
+              查看详情
+              <Icon name="arrow-right" size={14} />
+            </a>
+          </footer>
+        </article>
+      ))
+    }
+  </div>
+</div>
+
+<style>
+  .sb {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .sb__list {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding-bottom: 4px;
+    scrollbar-width: thin;
+  }
+
+  .sb__tab {
+    flex: none;
+    scroll-snap-align: start;
+    display: grid;
+    gap: 3px;
+    text-align: left;
+    padding: 9px 13px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: transparent;
+    cursor: pointer;
+    transition:
+      border-color 0.18s ease,
+      background-color 0.18s ease;
+  }
+
+  .sb__tab:hover {
+    border-color: var(--line-strong);
+    background: var(--sunken);
+  }
+
+  .sb__tab.is-active {
+    border-color: var(--ink);
+    background: var(--surface);
+  }
+
+  .sb__tab-name {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--ink);
+  }
+
+  .sb__tab-title {
+    font-size: 11.5px;
+    color: var(--muted);
+  }
+
+  .sb__panel {
+    display: none;
+    padding: 22px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
+  }
+
+  .sb__panel.is-active {
+    display: block;
+    animation: sb-in 0.32s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  @keyframes sb-in {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sb__panel.is-active {
+      animation: none;
+    }
+  }
+
+  .sb__head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 14px;
+  }
+
+  .sb__title {
+    font-size: 22px;
+  }
+
+  .sb__mono {
+    margin-top: 5px;
+    font-size: 12.5px;
+    color: var(--accent-ink);
+  }
+
+  .sb__summary {
+    margin-top: 16px;
+    font-size: 14.5px;
+    line-height: 1.75;
+    color: var(--ink-soft);
+    max-width: 62ch;
+  }
+
+  .sb__cols {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+  }
+
+  .sb__col-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+
+  .sb__ul {
+    display: grid;
+    gap: 9px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .sb__ul li {
+    position: relative;
+    padding-left: 16px;
+    font-size: 13.5px;
+    line-height: 1.65;
+    color: var(--ink-soft);
+  }
+
+  .sb__ul li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 9px;
+    width: 6px;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  .sb__dl {
+    display: grid;
+    gap: 12px;
+    margin: 0;
+  }
+
+  .sb__dl-row {
+    display: grid;
+    grid-template-columns: 52px 1fr;
+    gap: 12px;
+    align-items: baseline;
+  }
+
+  .sb__dl-row dt {
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    color: var(--accent-ink);
+  }
+
+  .sb__dl-row dd {
+    margin: 0;
+    font-size: 13.5px;
+    line-height: 1.65;
+    color: var(--ink-soft);
+  }
+
+  .sb__usage {
+    margin-top: 24px;
+  }
+
+  .sb__cmd {
+    display: block;
+    font-size: 13px;
+    line-height: 1.6;
+    white-space: normal;
+  }
+
+  .sb__cmd .prompt {
+    display: inline;
+    margin-right: 6px;
+  }
+
+  .sb__foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: 24px;
+    padding-top: 18px;
+    border-top: 1px solid var(--line);
+  }
+
+  .sb__pair-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .sb__pair {
+    padding: 5px 10px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: transparent;
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    color: var(--ink-soft);
+    cursor: pointer;
+    transition:
+      border-color 0.18s ease,
+      color 0.18s ease;
+  }
+
+  .sb__pair:hover {
+    border-color: var(--accent);
+    color: var(--accent-ink);
+  }
+
+  .sb__more {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13.5px;
+    color: var(--ink);
+    border-bottom: 1px solid var(--line-strong);
+    padding-bottom: 2px;
+    transition: border-color 0.18s ease;
+  }
+
+  .sb__more:hover {
+    border-color: var(--accent);
+  }
+
+  @media (min-width: 900px) {
+    .sb {
+      grid-template-columns: 260px 1fr;
+      gap: 28px;
+      align-items: start;
+    }
+
+    .sb__list {
+      display: grid;
+      gap: 2px;
+      overflow: visible;
+      position: sticky;
+      top: 88px;
+    }
+
+    .sb__tab {
+      border: 0;
+      border-radius: 10px;
+      padding: 9px 12px;
+      background: transparent;
+    }
+
+    .sb__tab.is-active {
+      background: var(--sunken);
+      box-shadow: inset 2px 0 0 var(--accent);
+    }
+
+    .sb__cols {
+      grid-template-columns: 1fr 1.35fr;
+      gap: 32px;
+    }
+  }
+</style>
+
+<script>
+  import '../scripts/tabs';
+</script>

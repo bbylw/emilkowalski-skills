@@ -1,0 +1,278 @@
+---
+import Icon from './Icon.astro';
+import { site } from '../data/site';
+
+interface Props {
+  active?: string;
+}
+
+const { active } = Astro.props;
+const path = Astro.url.pathname.replace(/\/$/, '') || '/';
+---
+
+<header class="nav">
+  <div class="shell nav__inner">
+    <a href="/" class="nav__brand" aria-label="Skills 首页">
+      <span class="nav__mark" aria-hidden="true"></span>
+      <span class="nav__word">Skills</span>
+      <span class="nav__by">emilkowalski</span>
+    </a>
+
+    <nav class="nav__links" aria-label="主导航">
+      {
+        site.nav.map((item) => {
+          const href = item.href.replace(/\/$/, '');
+          const isActive = path === href || active === item.href || (href !== '/' && path.startsWith(href));
+          return (
+            <a href={item.href} class:list={['nav__link', { 'is-active': isActive }]} aria-current={isActive ? 'page' : undefined}>
+              {item.label}
+            </a>
+          );
+        })
+      }
+    </nav>
+
+    <div class="nav__actions">
+      <button type="button" class="nav__theme" data-theme-toggle aria-label="切换深浅色">
+        <Icon name="sun" size={17} class="nav__sun" />
+        <Icon name="moon" size={17} class="nav__moon" />
+      </button>
+
+      <a href="/#install" class="btn btn-primary btn-sm nav__cta">安装 skills</a>
+
+      <details class="nav__menu">
+        <summary aria-label="打开导航">菜单</summary>
+        <div class="nav__panel card">
+          {
+            site.nav.map((item) => (
+              <a href={item.href} class="nav__panel-link">
+                {item.label}
+              </a>
+            ))
+          }
+          <a href="/#install" class="nav__panel-link">安装 skills</a>
+        </div>
+      </details>
+    </div>
+
+    <span class="scroll-progress" aria-hidden="true"></span>
+  </div>
+</header>
+
+<style>
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    border-bottom: 1px solid var(--line);
+    background: color-mix(in oklab, var(--paper) 86%, transparent);
+    backdrop-filter: blur(14px) saturate(140%);
+  }
+
+  @supports not (backdrop-filter: blur(4px)) {
+    .nav {
+      background: var(--paper);
+    }
+  }
+
+  @media (prefers-reduced-transparency: reduce) {
+    .nav {
+      background: var(--paper);
+      backdrop-filter: none;
+    }
+  }
+
+  .nav__inner {
+    position: relative;
+    display: flex;
+    height: 64px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .nav__brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+  }
+
+  .nav__mark {
+    width: 18px;
+    height: 18px;
+    border-radius: 5px;
+    background:
+      linear-gradient(135deg, var(--accent) 0%, var(--accent) 46%, transparent 46%),
+      color-mix(in oklab, var(--ink) 26%, transparent);
+    box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--ink) 22%, transparent);
+  }
+
+  .nav__word {
+    font-size: 15.5px;
+    font-weight: 550;
+    letter-spacing: -0.01em;
+  }
+
+  .nav__by {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--muted);
+    padding-left: 10px;
+    border-left: 1px solid var(--line);
+  }
+
+  .nav__links {
+    display: none;
+    gap: 26px;
+  }
+
+  .nav__link {
+    font-size: 14px;
+    color: var(--muted);
+    transition: color 0.18s ease;
+  }
+
+  .nav__link:hover,
+  .nav__link.is-active {
+    color: var(--ink);
+  }
+
+  .nav__actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .nav__theme {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-ctl);
+    color: var(--ink);
+    background: transparent;
+    cursor: pointer;
+    transition:
+      border-color 0.2s ease,
+      background-color 0.2s ease;
+  }
+
+  .nav__theme:hover {
+    border-color: var(--ink);
+    background: var(--sunken);
+  }
+
+  .nav__cta {
+    display: none;
+  }
+
+  .nav__menu {
+    position: relative;
+  }
+
+  .nav__menu > summary {
+    list-style: none;
+    display: inline-flex;
+    align-items: center;
+    height: 36px;
+    padding-inline: 12px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-ctl);
+    font-size: 13px;
+    cursor: pointer;
+  }
+
+  .nav__menu > summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .nav__panel {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 10px);
+    display: grid;
+    min-width: 168px;
+    padding: 6px;
+    box-shadow: var(--shadow-card);
+  }
+
+  .nav__panel-link {
+    padding: 9px 10px;
+    border-radius: 8px;
+    font-size: 14px;
+    color: var(--ink-soft);
+  }
+
+  .nav__panel-link:hover {
+    background: var(--sunken);
+    color: var(--ink);
+  }
+
+  @media (min-width: 768px) {
+    .nav__links {
+      display: flex;
+    }
+
+    .nav__cta {
+      display: inline-flex;
+    }
+
+    .nav__menu {
+      display: none;
+    }
+  }
+</style>
+
+<!-- 图标由 Icon.astro 渲染，样式作用域跨组件，因此单独放全局块 -->
+<style is:global>
+  .nav__sun,
+  .nav__moon {
+    display: none;
+  }
+
+  html[data-theme='light'] .nav__sun {
+    display: inline-flex;
+  }
+
+  html[data-theme='dark'] .nav__moon {
+    display: inline-flex;
+  }
+</style>
+
+<script>
+  const root = document.documentElement;
+  const key = 'theme';
+
+  function toggle() {
+    const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+    root.dataset.theme = next;
+    try {
+      localStorage.setItem(key, next);
+    } catch {
+      // 隐私模式下写入会抛错：本次会话内切换仍然生效，只是不被记住
+    }
+  }
+
+  function bindMenu(details: HTMLDetailsElement) {
+    // 点完面板里的链接（尤其同页 /#install 锚点）就收起菜单
+    details.querySelectorAll('a').forEach((link) => {
+      link.addEventListener('click', () => details.removeAttribute('open'));
+    });
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') details.removeAttribute('open');
+    });
+  }
+
+  function bind() {
+    document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]').forEach((btn) => {
+      btn.addEventListener('click', toggle);
+    });
+    document.querySelectorAll<HTMLDetailsElement>('.nav__menu').forEach(bindMenu);
+  }
+
+  bind();
+  document.addEventListener('astro:after-swap', bind);
+</script>

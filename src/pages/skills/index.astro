@@ -1,0 +1,242 @@
+---
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import { skills, groups, type GroupId } from '../../data/skills';
+import { playbooks } from '../../data/playbooks';
+
+const byGroup = groups.map((group) => ({
+  ...group,
+  items: skills.filter((s) => s.group === group.id as GroupId),
+}));
+
+const usedIn = (slug: string) => playbooks.filter((p) => p.chain.some((c) => c.slug === slug));
+---
+
+<Base title="全部 Skills" active="/skills">
+  <Breadcrumbs items={[{ name: '首页', href: '/' }, { name: '全部 Skills' }]} />
+  <section class="page">
+    <div class="shell">
+      <header class="page__head reveal">
+        <p class="eyebrow">共 {skills.length} 个</p>
+        <h1 class="page__title">全部 Skills</h1>
+        <p class="page__body">
+          按职责分成四组。每一个都只解决一段明确的事，所以判断什么时候该叫它，比记住它的名字更重要。
+        </p>
+      </header>
+
+      {
+        byGroup.map((group) => (
+          <section class="group">
+            <div class="group__head">
+              <h2 class="group__title">{group.label}</h2>
+              <p class="group__note">{group.note}</p>
+            </div>
+
+            <div class:list={['group__grid', { 'group__grid--pair': group.items.length === 2 }]}>
+              {group.items.map((skill) => {
+                const combos = usedIn(skill.slug);
+                return (
+                  <a class="skill" href={`/skills/${skill.slug}`}>
+                    <div class="skill__top">
+                      <p class="skill__name num">{skill.name}</p>
+                      {skill.core && <span class="chip skill__core">核心</span>}
+                    </div>
+                    <h3 class="skill__title">{skill.title}</h3>
+                    <p class="skill__tagline">{skill.tagline}</p>
+                    <p class="skill__job">{skill.job}</p>
+                    <div class="skill__foot">
+                      <span class="skill__count">
+                        {combos.length > 0 ? `出现在 ${combos.length} 条组合里` : '独立使用'}
+                      </span>
+                      <span class="skill__go">
+                        查看
+                        <Icon name="arrow-right" size={14} />
+                      </span>
+                    </div>
+                  </a>
+                );
+              })}
+            </div>
+          </section>
+        ))
+      }
+    </div>
+  </section>
+</Base>
+
+<style>
+  .page {
+    padding-block: 48px 40px;
+  }
+
+  .page__head {
+    max-width: 62ch;
+    padding-bottom: 44px;
+  }
+
+  .page__title {
+    margin-top: 14px;
+    font-size: clamp(34px, 5vw, 58px);
+    line-height: 1.08;
+    letter-spacing: -0.035em;
+  }
+
+  .page__body {
+    margin-top: 18px;
+    font-size: 15px;
+    line-height: 1.75;
+    color: var(--muted);
+  }
+
+  .group {
+    padding-block: 34px;
+    border-top: 1px solid var(--line);
+  }
+
+  .group__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 14px;
+    margin-bottom: 22px;
+  }
+
+  .group__title {
+    font-size: 20px;
+  }
+
+  .group__note {
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .group__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .skill {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-card);
+    transition:
+      transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+      border-color 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+
+  .skill:hover {
+    border-color: color-mix(in oklab, var(--accent) 45%, var(--line));
+    box-shadow: var(--shadow-card);
+  }
+
+  @media (hover: hover) {
+    .skill:hover {
+      transform: translateY(-2px);
+    }
+  }
+
+  .skill:active {
+    transform: translateY(0);
+  }
+
+  .skill__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .skill__name {
+    font-size: 12.5px;
+    color: var(--accent-ink);
+  }
+
+  .skill__core {
+    border-color: var(--accent);
+    color: var(--accent-ink);
+  }
+
+  .skill__title {
+    margin-top: 14px;
+    font-size: 19px;
+  }
+
+  .skill__tagline {
+    margin-top: 8px;
+    font-size: 13.5px;
+    color: var(--ink-soft);
+  }
+
+  .skill__job {
+    margin-top: 10px;
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--muted);
+  }
+
+  .skill__foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 20px;
+    padding-top: 14px;
+    border-top: 1px solid var(--line);
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    color: var(--muted);
+  }
+
+  .skill__go {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--ink);
+    opacity: 0;
+    transition:
+      opacity 0.2s ease,
+      transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    transform: translateX(-4px);
+  }
+
+  .skill:hover .skill__go,
+  .skill:focus-visible .skill__go {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* 触屏没有 hover，直接显示 */
+  @media (hover: none) {
+    .skill__go {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @media (min-width: 700px) {
+    .group__grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+  }
+
+  @media (min-width: 1040px) {
+    .page {
+      padding-block: 72px 40px;
+    }
+
+    .group__grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .group__grid--pair {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+</style>

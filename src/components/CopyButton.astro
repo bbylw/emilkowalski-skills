@@ -1,0 +1,111 @@
+---
+import Icon from './Icon.astro';
+
+interface Props {
+  from?: string;
+  value?: string;
+  label?: string;
+  done?: string;
+}
+
+const { from, value, label = '复制', done = '已复制' } = Astro.props;
+---
+
+<button
+  type="button"
+  class="copy"
+  data-copy
+  data-copy-from={from}
+  data-copy-value={value}
+  aria-label={label}
+>
+  <span class="copy__idle">
+    <Icon name="copy" size={14} />
+    {label}
+  </span>
+  <span class="copy__done">
+    <Icon name="check" size={14} />
+    {done}
+  </span>
+</button>
+
+<style>
+  .copy {
+    display: inline-flex;
+    align-items: center;
+    height: 30px;
+    padding-inline: 10px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    cursor: pointer;
+    transition:
+      color 0.18s ease,
+      border-color 0.18s ease;
+  }
+
+  .copy:hover {
+    color: var(--ink);
+    border-color: var(--ink);
+  }
+
+  .copy__done {
+    display: none;
+  }
+
+  .copy.is-copied {
+    color: var(--accent-ink);
+    border-color: var(--accent);
+  }
+
+  .copy.is-copied .copy__idle {
+    display: none;
+  }
+
+  .copy.is-copied .copy__done {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .copy__idle {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .copy.is-failed {
+    color: var(--ink);
+    border-color: var(--line-strong);
+    animation: copy-shake 0.32s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  }
+
+  @keyframes copy-shake {
+    10%,
+    90% {
+      transform: translateX(-1px);
+    }
+    20%,
+    80% {
+      transform: translateX(2px);
+    }
+    30%,
+    50%,
+    70% {
+      transform: translateX(-3px);
+    }
+    40%,
+    60% {
+      transform: translateX(3px);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .copy.is-failed {
+      animation: none;
+    }
+  }
+</style>

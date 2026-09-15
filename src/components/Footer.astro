@@ -1,0 +1,118 @@
+---
+import Icon from './Icon.astro';
+import { site } from '../data/site';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="band footer">
+  <div class="shell footer__grid">
+    <div class="footer__lead">
+      <p class="footer__kicker">emilkowalski / skills</p>
+      <p class="footer__note">
+        判断自己关于动效、乃至广义上的设计是否做了正确的选择，其实很难。这些 skills
+        帮你更快地抵达那些正确的决定。
+      </p>
+      <a href={site.subscribe} class="btn btn-ghost btn-sm" target="_blank" rel="noreferrer">
+        订阅资讯简报
+        <Icon name="arrow-up-right" size={14} />
+      </a>
+    </div>
+
+    <div class="footer__col">
+      <p class="footer__label">本站</p>
+      <a href="/">概览</a>
+      <a href="/playbook">组合手册</a>
+      <a href="/skills">全部 Skills</a>
+    </div>
+
+    <div class="footer__col">
+      <p class="footer__label">上游</p>
+      <a href={site.repo} target="_blank" rel="noreferrer">GitHub 仓库</a>
+      <a href={site.skillsSh} target="_blank" rel="noreferrer">skills.sh</a>
+      <a href={site.authorSite} target="_blank" rel="noreferrer">Emil Kowalski</a>
+    </div>
+  </div>
+
+  <div class="shell footer__base">
+    <p>本站是 emilkowalski/skills 的中文整理与延伸说明，内容版权归原作者所有。</p>
+    <p class="num">{year}</p>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    padding-block: 56px 28px;
+    margin-top: 40px;
+  }
+
+  .footer__grid {
+    display: grid;
+    gap: 40px;
+    grid-template-columns: 1fr;
+  }
+
+  .footer__lead {
+    display: grid;
+    gap: 14px;
+    justify-items: start;
+    max-width: 46ch;
+  }
+
+  .footer__kicker {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--accent-ink);
+  }
+
+  .footer__note {
+    font-size: 14.5px;
+    line-height: 1.7;
+    color: var(--muted);
+  }
+
+  .footer__col {
+    display: grid;
+    gap: 10px;
+    align-content: start;
+  }
+
+  .footer__col a {
+    font-size: 14px;
+    color: var(--muted);
+    width: fit-content;
+    transition: color 0.18s ease;
+  }
+
+  .footer__col a:hover {
+    color: var(--ink);
+  }
+
+  .footer__label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink);
+    margin-bottom: 2px;
+  }
+
+  .footer__base {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: space-between;
+    margin-top: 44px;
+    padding-top: 18px;
+    border-top: 1px solid var(--line);
+    font-size: 12.5px;
+    color: var(--muted);
+  }
+
+  @media (min-width: 768px) {
+    .footer__grid {
+      grid-template-columns: 1.6fr 1fr 1fr;
+      gap: 48px;
+    }
+  }
+</style>

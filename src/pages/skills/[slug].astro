@@ -1,0 +1,436 @@
+---
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+import CopyButton from '../../components/CopyButton.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import { skills, groupLabel, type Skill } from '../../data/skills';
+import { playbooks, stages } from '../../data/playbooks';
+
+export function getStaticPaths() {
+  return skills.map((skill, index) => ({
+    params: { slug: skill.slug },
+    props: {
+      skill,
+      prev: skills[(index - 1 + skills.length) % skills.length]!,
+      next: skills[(index + 1) % skills.length]!,
+    },
+  }));
+}
+
+interface Props {
+  skill: Skill;
+  prev: Skill;
+  next: Skill;
+}
+
+const { skill, prev, next } = Astro.props;
+
+const usedIn = playbooks.filter((p) => p.chain.some((step) => step.slug === skill.slug));
+const primaryStage = usedIn[0]?.chain.find((s) => s.slug === skill.slug)?.stage;
+const stageLabel = primaryStage ? stages.find((s) => s.id === primaryStage)?.label : undefined;
+---
+
+<Base title={skill.title} description={skill.summary}>
+  <Breadcrumbs items={[{ name: '首页', href: '/' }, { name: '全部 Skills', href: '/skills' }, { name: skill.title }]} />
+  <article class="page">
+    <div class="shell">
+      <a class="back" href="/skills">
+        <Icon name="arrow-right" size={14} class="back__flip" />
+        全部 Skills
+      </a>
+
+      <header class="head">
+        <div class="head__meta">
+          <span class="chip">{groupLabel(skill.group)}</span>
+          {skill.core && <span class="chip head__core">核心</span>}
+          {stageLabel && <span class="label">组合中的位置：{stageLabel}</span>}
+        </div>
+        <h1 class="head__title">{skill.title}</h1>
+        <p class="head__name num">{skill.name}</p>
+        <p class="head__summary">{skill.summary}</p>
+      </header>
+
+      <div class="body">
+        <div class="body__main">
+          <section class="block">
+            <h2 class="block__title">它把哪件事做完了</h2>
+            <p class="job">{skill.job}</p>
+          </section>
+
+          <section class="block">
+            <h2 class="block__title">什么时候用它</h2>
+            <ul class="bullets">
+              {
+                skill.when.map((w) => (
+                  <li>{w}</li>
+                ))
+              }
+            </ul>
+          </section>
+
+          <section class="block">
+            <h2 class="block__title">它具体做什么</h2>
+            <dl class="rows">
+              {
+                skill.does.map((d) => (
+                  <div class="rows__row">
+                    <dt>{d.k}</dt>
+                    <dd>{d.v}</dd>
+                  </div>
+                ))
+              }
+            </dl>
+          </section>
+
+          <section class="block">
+            <h2 class="block__title">可以这样提要求</h2>
+            <div class="usage">
+              <p class="cmd usage__cmd">
+                <span class="prompt">›</span>
+                <span id="usage-cmd">{skill.prompt}</span>
+              </p>
+              <CopyButton from="#usage-cmd" label="复制" />
+            </div>
+          </section>
+        </div>
+
+        <aside class="aside">
+          <section class="aside__block">
+            <p class="aside__label">常与它组合</p>
+            <ul class="aside__list">
+              {
+                skill.pairs.map((slug) => {
+                  const target = skills.find((s) => s.slug === slug);
+                  return (
+                    <li>
+                      <a class="aside__link" href={`/skills/${slug}`}>
+                        <span class="num aside__slug">{slug}</span>
+                        <span class="aside__title">{target?.title}</span>
+                      </a>
+                    </li>
+                  );
+                })
+              }
+            </ul>
+          </section>
+
+          {
+            usedIn.length > 0 && (
+              <section class="aside__block">
+                <p class="aside__label">出现在 {usedIn.length} 条组合里</p>
+                <ul class="aside__list">
+                  {usedIn.map((p) => (
+                    <li>
+                      <a class="aside__link" href={`/playbook#${p.id}`}>
+                        <span class="aside__title">{p.title}</span>
+                        <span class="aside__chain num">
+                          {p.chain.map((c) => c.slug).join(' → ')}
+                        </span>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )
+          }
+
+          <section class="aside__block">
+            <p class="aside__label">上游</p>
+            <a class="aside__link aside__link--out" href={skill.href} target="_blank" rel="noreferrer">
+              <span>阅读 SKILL.md</span>
+              <Icon name="arrow-up-right" size={14} />
+            </a>
+          </section>
+        </aside>
+      </div>
+
+      <nav class="pager" aria-label="上一个与下一个 skill">
+        <a class="pager__item" href={`/skills/${prev.slug}`}>
+          <span class="label">上一个</span>
+          <span class="pager__name">{prev.title}</span>
+        </a>
+        <a class="pager__item pager__item--next" href={`/skills/${next.slug}`}>
+          <span class="label">下一个</span>
+          <span class="pager__name">{next.title}</span>
+        </a>
+      </nav>
+    </div>
+  </article>
+</Base>
+
+<style>
+  .page {
+    padding-block: 40px 20px;
+  }
+
+  .back {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 13px;
+    color: var(--muted);
+    transition: color 0.18s ease;
+  }
+
+  .back:hover {
+    color: var(--ink);
+  }
+
+  :global(.back__flip) {
+    transform: rotate(180deg);
+  }
+
+  .head {
+    padding-block: 30px 34px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .head__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .head__core {
+    border-color: var(--accent);
+    color: var(--accent-ink);
+  }
+
+  .head__title {
+    margin-top: 18px;
+    font-size: clamp(32px, 5vw, 56px);
+    line-height: 1.08;
+    letter-spacing: -0.035em;
+  }
+
+  .head__name {
+    margin-top: 10px;
+    font-size: 13.5px;
+    color: var(--accent-ink);
+  }
+
+  .head__summary {
+    margin-top: 20px;
+    max-width: 60ch;
+    font-size: 15.5px;
+    line-height: 1.8;
+    color: var(--ink-soft);
+  }
+
+  .body {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+    padding-top: 32px;
+  }
+
+  .block {
+    padding-bottom: 28px;
+  }
+
+  .block + .block {
+    padding-top: 28px;
+    border-top: 1px solid var(--line);
+  }
+
+  .block__title {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 16px;
+  }
+
+  .job {
+    font-size: clamp(19px, 2.4vw, 26px);
+    line-height: 1.4;
+    letter-spacing: -0.02em;
+    max-width: 30ch;
+  }
+
+  .bullets {
+    display: grid;
+    gap: 11px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .bullets li {
+    position: relative;
+    padding-left: 18px;
+    font-size: 14.5px;
+    line-height: 1.7;
+    color: var(--ink-soft);
+  }
+
+  .bullets li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 11px;
+    width: 8px;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  .rows {
+    display: grid;
+    gap: 16px;
+    margin: 0;
+  }
+
+  .rows__row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 5px;
+  }
+
+  .rows__row dt {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--accent-ink);
+  }
+
+  .rows__row dd {
+    margin: 0;
+    font-size: 14.5px;
+    line-height: 1.7;
+    color: var(--ink-soft);
+  }
+
+  .usage {
+    display: grid;
+    gap: 12px;
+    justify-items: start;
+  }
+
+  .usage__cmd {
+    width: 100%;
+    line-height: 1.7;
+  }
+
+  .aside {
+    display: grid;
+    gap: 26px;
+    align-content: start;
+  }
+
+  .aside__block {
+    padding: 18px;
+    background: var(--sunken);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-card);
+  }
+
+  .aside__label {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+
+  .aside__list {
+    display: grid;
+    gap: 4px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .aside__link {
+    display: grid;
+    gap: 3px;
+    padding: 8px 9px;
+    border-radius: 9px;
+    transition: background-color 0.18s ease;
+  }
+
+  .aside__link:hover {
+    background: var(--surface);
+  }
+
+  .aside__slug {
+    font-size: 12.5px;
+    color: var(--accent-ink);
+  }
+
+  .aside__title {
+    font-size: 13.5px;
+    color: var(--ink);
+  }
+
+  .aside__chain {
+    font-size: 11px;
+    line-height: 1.6;
+    color: var(--muted);
+  }
+
+  .aside__link--out {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    font-size: 13.5px;
+  }
+
+  .pager {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin-top: 44px;
+    padding-top: 26px;
+    border-top: 1px solid var(--line);
+  }
+
+  .pager__item {
+    display: grid;
+    gap: 7px;
+    padding: 16px 18px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-card);
+    transition: border-color 0.18s ease;
+  }
+
+  .pager__item:hover {
+    border-color: var(--ink);
+  }
+
+  .pager__item--next {
+    text-align: right;
+  }
+
+  .pager__name {
+    font-size: 15px;
+  }
+
+  @media (min-width: 900px) {
+    .page {
+      padding-block: 56px 40px;
+    }
+
+    .body {
+      grid-template-columns: 7fr 4fr;
+      gap: 56px;
+    }
+
+    .aside {
+      position: sticky;
+      top: 96px;
+    }
+
+    .rows__row {
+      grid-template-columns: 76px 1fr;
+      gap: 16px;
+      align-items: baseline;
+    }
+
+    .pager {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+</style>
