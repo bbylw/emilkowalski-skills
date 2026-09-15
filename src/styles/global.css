@@ -286,6 +286,36 @@
     overflow-x: auto;
   }
 
+  /* 主题切换：日月叠在同一格，靠 opacity/transform 交叉旋转，
+     不用 display 隐藏（组件 scoped 的 .icon{display:inline-flex} 会把它顶掉） */
+  .theme-swap {
+    display: grid;
+    place-items: center;
+  }
+
+  .theme-swap__i {
+    grid-area: 1 / 1;
+    transition:
+      transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+      opacity 0.25s ease;
+  }
+
+  html[data-theme='light'] .theme-swap__moon {
+    opacity: 0;
+    transform: rotate(120deg) scale(0.4);
+  }
+
+  html[data-theme='dark'] .theme-swap__sun {
+    opacity: 0;
+    transform: rotate(-120deg) scale(0.4);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .theme-swap__i {
+      transition: none;
+    }
+  }
+
   .cmd .prompt {
     color: var(--accent-ink);
     user-select: none;

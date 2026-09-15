@@ -134,7 +134,8 @@ const year = new Date().getFullYear();
     color: var(--ink);
   }
 
-  .footer__up {
+  /* Icon 子组件根节点不带本组件 scope，必须走 :global */
+  .footer__top :global(.footer__up) {
     transform: rotate(-90deg);
   }
 

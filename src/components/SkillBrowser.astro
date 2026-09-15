@@ -362,12 +362,13 @@ const first = skills[0]!;
     transition: border-color 0.18s ease;
   }
 
-  .sb__more .icon {
+  /* Icon 子组件根节点不带本组件 scope，必须走 :global */
+  .sb__more :global(.icon) {
     transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   @media (hover: hover) {
-    .sb__more:hover .icon {
+    .sb__more:hover :global(.icon) {
       transform: translateX(4px);
     }
   }

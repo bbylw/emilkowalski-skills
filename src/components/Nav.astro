@@ -34,14 +34,19 @@ const path = Astro.url.pathname.replace(/\/$/, '') || '/';
 
     <div class="nav__actions">
       <button type="button" class="nav__theme" data-theme-toggle aria-label="切换深浅色">
-        <Icon name="sun" size={17} class="nav__sun" />
-        <Icon name="moon" size={17} class="nav__moon" />
+        <span class="theme-swap">
+          <Icon name="sun" size={17} class="theme-swap__i theme-swap__sun" />
+          <Icon name="moon" size={17} class="theme-swap__i theme-swap__moon" />
+        </span>
       </button>
 
       <a href="/#install" class="btn btn-primary btn-sm nav__cta">安装 skills</a>
 
       <details class="nav__menu">
-        <summary aria-label="打开导航">菜单</summary>
+        <summary aria-label="打开导航">
+          <span>菜单</span>
+          <Icon name="caret-right" size={11} class="nav__menu-chev" />
+        </summary>
         <div class="nav__panel card">
           {
             site.nav.map((item) => (
@@ -177,12 +182,23 @@ const path = Astro.url.pathname.replace(/\/$/, '') || '/';
     list-style: none;
     display: inline-flex;
     align-items: center;
+    gap: 5px;
     height: 36px;
     padding-inline: 12px;
     border: 1px solid var(--line);
     border-radius: var(--radius-ctl);
     font-size: 13px;
     cursor: pointer;
+  }
+
+  /* Icon 子组件根节点不带本组件 scope，必须走 :global */
+  .nav__menu summary :global(.nav__menu-chev) {
+    color: var(--muted);
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .nav__menu[open] summary :global(.nav__menu-chev) {
+    transform: rotate(90deg);
   }
 
   .nav__menu > summary::-webkit-details-marker {
@@ -226,21 +242,7 @@ const path = Astro.url.pathname.replace(/\/$/, '') || '/';
   }
 </style>
 
-<!-- 图标由 Icon.astro 渲染，样式作用域跨组件，因此单独放全局块 -->
-<style is:global>
-  .nav__sun,
-  .nav__moon {
-    display: none;
-  }
-
-  html[data-theme='light'] .nav__sun {
-    display: inline-flex;
-  }
-
-  html[data-theme='dark'] .nav__moon {
-    display: inline-flex;
-  }
-</style>
+<!-- 主题图标的叠放与交换样式在 global.css（跨组件作用域，避免与 Icon.astro 的 display 打架） -->
 
 <script>
   const root = document.documentElement;

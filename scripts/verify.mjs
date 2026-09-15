@@ -232,18 +232,36 @@ for (const viewport of viewports) {
   const page = await context.newPage();
   const label = 'interactions';
 
-  // 1. 主题切换：点按钮 → data-theme 翻转且写入 localStorage
+  // 1. 主题切换：点按钮 → data-theme 翻转且写入 localStorage；日月按钮任何时刻只亮一个
+  const swapState = () =>
+    page.evaluate(() => {
+      const op = (s) => Number(getComputedStyle(document.querySelector(s)).opacity);
+      return { theme: document.documentElement.dataset.theme, sun: op('.theme-swap__sun'), moon: op('.theme-swap__moon') };
+    });
   await page.goto(base + '/', { waitUntil: 'load' });
   await page.evaluate(() => localStorage.removeItem('theme'));
   await page.reload({ waitUntil: 'load' });
   const before = await page.evaluate(() => document.documentElement.dataset.theme);
+  {
+    const s = await swapState();
+    const lit = (s.sun > 0.5 ? 1 : 0) + (s.moon > 0.5 ? 1 : 0);
+    if (lit !== 1) fail(`${label}: 初始主题下日月按钮点亮 ${lit} 个图标（应为 1）`);
+    if (s.theme === 'light' && !(s.sun > 0.5 && s.moon < 0.5)) fail(`${label}: light 主题应只亮太阳图标`);
+    if (s.theme === 'dark' && !(s.moon > 0.5 && s.sun < 0.5)) fail(`${label}: dark 主题应只亮月亮图标`);
+  }
   await page.click('[data-theme-toggle]');
+  await page.waitForTimeout(600);
   const after = await page.evaluate(() => ({
     theme: document.documentElement.dataset.theme,
     stored: localStorage.getItem('theme'),
   }));
   if (before === after.theme) fail(`${label}: 主题切换未翻转 data-theme`);
   if (after.stored !== after.theme) fail(`${label}: 主题未按预期写入 localStorage（${after.stored}）`);
+  {
+    const s = await swapState();
+    const lit = (s.sun > 0.5 ? 1 : 0) + (s.moon > 0.5 ? 1 : 0);
+    if (lit !== 1) fail(`${label}: 切换后日月按钮点亮 ${lit} 个图标（应为 1）`);
+  }
   await page.close();
 
   // 2. 深链选中 + roving tabindex：/playbook#native-feel
