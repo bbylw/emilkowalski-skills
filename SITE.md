@@ -67,9 +67,9 @@ bun run verify            # 或 node scripts/verify.mjs [baseUrl]
 
 ## 部署
 
-- 线上：GitHub Pages（Actions 部署，`.github/workflows/deploy.yml`），仓库 `bbylw/emilkowalski-skills`，分支 `master`。
+- 线上：GitHub Pages（Actions 部署，`.github/workflows/deploy.yml`），仓库 `bbylw/emilkowalski-skills`，默认分支 `main`。
 - 自定义域：`https://emilkowalski-skills.ndjp.net`（`site`、robots sitemap、canonical 已对齐；CNAME 经 `gh api PUT /pages --input` 设置，HTTPS 证书签发后 GitHub 自动启用）。
-- 发布铁律仍然成立：任何改动走 本地构建 → 用户预览验收 → 明确同意 → push（push 到 master 即触发部署）。
+- 发布铁律仍然成立：任何改动走 本地构建 → 用户预览验收 → 明确同意 → push（push 到 main 即触发部署）。
 - 本地预览统一走 portless（命名 HTTPS 域名），无头验收直连本地源端口（`node scripts/verify.mjs`，线上验收可 `node scripts/verify.mjs https://emilkowalski-skills.ndjp.net`）。
 
 ## 包管理
