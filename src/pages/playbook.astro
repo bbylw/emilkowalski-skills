@@ -54,8 +54,8 @@ const covered = new Set(playbooks.flatMap((p) => p.chain.map((c) => c.slug)));
 
         <div class="matrix__rows">
           {
-            byStage.map((stage) => (
-              <div class="mstage">
+            byStage.map((stage, i) => (
+              <div class="mstage reveal" data-reveal-step={i}>
                 <div class="mstage__label">
                   <p class="mstage__name">{stage.label}</p>
                   <p class="mstage__note">{stage.note}</p>

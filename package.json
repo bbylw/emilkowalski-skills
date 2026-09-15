@@ -8,6 +8,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "check": "astro check",
+    "og": "node scripts/og.mjs",
     "verify": "node scripts/verify.mjs"
   },
   "dependencies": {

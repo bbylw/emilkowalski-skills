@@ -11,7 +11,7 @@ import { mkdir } from 'node:fs/promises';
 const base = process.argv[2] ?? 'http://localhost:4321';
 const outDir = '.shots';
 
-const routes = ['/', '/playbook', '/skills', '/skills/animate', '/skills/ask-sonner'];
+const routes = ['/', '/playbook', '/skills', '/skills/animate', '/skills/ask-sonner', '/404'];
 const viewports = [
   { name: 'desktop', width: 1440, height: 960 },
   { name: 'mobile', width: 390, height: 844 },
@@ -177,7 +177,10 @@ for (const viewport of viewports) {
       const page = await context.newPage();
       const errors = [];
       page.on('console', (msg) => {
-        if (msg.type() === 'error') errors.push(msg.text());
+        if (msg.type() !== 'error') return;
+        // /404 的主文档本身就是 404 状态，浏览器会把这一条记成控制台错误，属于预期
+        if (route === '/404' && /status of 404/.test(msg.text())) return;
+        errors.push(msg.text());
       });
       page.on('pageerror', (err) => errors.push(String(err)));
 

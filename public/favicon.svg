@@ -1,5 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <rect width="32" height="32" rx="7" fill="#0f1115" />
-  <rect x="8" y="9" width="9" height="9" rx="2" fill="#ffffff" opacity="0.32" />
-  <rect x="15" y="16" width="9" height="9" rx="2" fill="#e2483a" />
+  <!-- 与顶栏品牌标记同一套语言：一个方块，朱红占对角一半，其余留给中性灰 -->
+  <defs>
+    <linearGradient id="split" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#e2483a" />
+      <stop offset="0.5" stop-color="#e2483a" />
+      <stop offset="0.5" stop-color="#8a8d98" />
+      <stop offset="1" stop-color="#8a8d98" />
+    </linearGradient>
+  </defs>
+  <rect width="32" height="32" rx="7" fill="#191a1f" />
+  <rect x="6.5" y="6.5" width="19" height="19" rx="4.5" fill="url(#split)" />
 </svg>

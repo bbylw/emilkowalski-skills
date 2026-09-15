@@ -76,6 +76,22 @@
     --shadow-lift: 0 2px 4px oklch(0 0 0 / 0.45), 0 24px 60px oklch(0 0 0 / 0.5);
   }
 
+  /* 用户在系统里要求更高对比度时，把发丝线与次级文字整体提一档。
+     只动令牌不动组件：所有引用处自动跟进，不产生第二套样式。 */
+  @media (prefers-contrast: more) {
+    :root {
+      --muted: oklch(0.42 0.015 265);
+      --line: oklch(0.86 0.008 265);
+      --line-strong: oklch(0.72 0.012 265);
+    }
+
+    [data-theme='dark'] {
+      --muted: oklch(0.76 0.012 265);
+      --line: oklch(0.34 0.012 265);
+      --line-strong: oklch(0.46 0.014 265);
+    }
+  }
+
   * {
     border-color: var(--line);
   }
@@ -101,6 +117,9 @@
     font-synthesis-weight: none;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
+    /* 中英/中文与数字之间自动加 1/8em 间隙（Chrome 128+，其余引擎忽略）。
+       本站大量混排如「13 个 skill」「1000ms」，这是排版质量的最后一格。 */
+    text-autospace: ideograph-alpha ideograph-numeric;
   }
 
   /* 胶片颗粒：只挂在 fixed 伪元素上，不进滚动层，GPU 成本恒定 */
@@ -137,6 +156,8 @@
     font-weight: 500;
     letter-spacing: -0.022em;
     text-wrap: balance;
+    /* 中文标题按短语断行，而不是任意位置截断（Chrome 119+，其余引擎无副作用） */
+    word-break: auto-phrase;
   }
 
   p {

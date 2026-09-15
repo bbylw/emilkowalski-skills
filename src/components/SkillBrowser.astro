@@ -152,6 +152,11 @@ const first = skills[0]!;
     background: var(--surface);
   }
 
+  /* 移动端选中 pill：名称一并转朱红，扫一眼即定位（桌面端由左侧竖条表达，见下方覆盖） */
+  .sb__tab.is-active .sb__tab-name {
+    color: var(--accent-ink);
+  }
+
   .sb__tab-name {
     font-family: var(--font-mono);
     font-size: 12px;

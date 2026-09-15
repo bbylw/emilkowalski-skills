@@ -33,11 +33,11 @@ const usedIn = (slug: string) => playbooks.filter((p) => p.chain.some((c) => c.s
               <p class="group__note">{group.note}</p>
             </div>
 
-            <div class:list={['group__grid', { 'group__grid--pair': group.items.length === 2 }]}>
+            <div class:list={['group__grid', { 'group__grid--pair': group.items.length === 2 }]} data-reveal-group>
               {group.items.map((skill) => {
                 const combos = usedIn(skill.slug);
                 return (
-                  <a class="skill" href={`/skills/${skill.slug}`}>
+                  <a class="skill reveal" href={`/skills/${skill.slug}`}>
                     <div class="skill__top">
                       <p class="skill__name num">{skill.name}</p>
                       {skill.core && <span class="chip skill__core">核心</span>}

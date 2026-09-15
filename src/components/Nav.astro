@@ -319,6 +319,10 @@ const path = Astro.url.pathname.replace(/\/$/, '') || '/';
     document.addEventListener('keydown', (event) => {
       if (event.key === 'Escape') details.removeAttribute('open');
     });
+    // 点到面板与摘要之外的区域同样收起，与 Escape 行为一致
+    document.addEventListener('pointerdown', (event) => {
+      if (details.open && !details.contains(event.target as Node)) details.removeAttribute('open');
+    });
   }
 
   function bind() {

@@ -14,6 +14,7 @@
 - 图标：`@phosphor-icons/core` 的 SVG `?raw` 内联（见 `src/lib/icons.ts`），不用图标字体、不整包引 CSS
 - `simple-icons` 仅取 5 个品牌 path 渲染「经验沉淀自」一行
 - `@astrojs/sitemap` 生成 sitemap，`robots.txt` 指向它
+- 社交分享卡片 `public/og.png`（1200×630）由 `bun run og`（`scripts/og.mjs`，playwright 渲染本站设计语言）生成，产物提交进仓库，部署不需要重跑
 
 ## 目录
 
@@ -39,6 +40,8 @@ scripts/verify.mjs  无头验收（见下）
 - 标题即导航，不加装饰性序号；数字只出现在真实数据（个数、时长、次数）里。
 - 正文禁 em dash / en dash（verify 会扫）。
 - 触屏纪律：hover 位移全部关 `@media (hover: hover)`；无 JS / reduced-motion 各有静态呈现路径。
+- 中文排版渐进增强：`text-autospace`（中英/数字间自动加隙，Chrome 128+）与标题 `word-break: auto-phrase`（按短语断行，Chrome 119+），旧引擎整条忽略、无副作用。
+- 系统级「更高对比度」偏好（`prefers-contrast: more`）只提令牌档位（`--muted` / `--line` / `--line-strong`），不产生第二套组件样式。
 
 ## 交互与降级契约
 
@@ -55,7 +58,7 @@ bun run build && bun run check
 bun run verify            # 或 node scripts/verify.mjs [baseUrl]
 ```
 
-`verify.mjs` 的量化检查（双主题 × 桌面/移动 × 5 条路由）：
+`verify.mjs` 的量化检查（双主题 × 桌面/移动 × 6 条路由，含 `/404`；404 页主文档本身就是 404 状态，该条控制台错误按预期过滤，其余报错照常捕获）：
 
 1. 横向溢出 / 元素越界（滚动容器内越界视为设计意图）；
 2. 每页恰好一个 `h1`、空链接、无 alt 图、破折号扫描、全角标点旁多余空格扫描（模板换行落在全角标点后会被渲染成空格，正文行必须整行书写）；

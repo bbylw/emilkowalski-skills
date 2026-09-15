@@ -284,6 +284,28 @@ const logos = [siVercel, siLinear, siApple, siExpo, siSwift];
     animation: hero-draw 0.7s cubic-bezier(0, 0, 0.58, 1) 0.85s forwards;
   }
 
+  /* 悬停「品味」二字时重画下划线：签名时刻可以再叫一次 */
+  @media (hover: hover) {
+    .hero__accent:hover .hero__swoosh path {
+      animation: hero-swoosh-redraw 0.55s cubic-bezier(0, 0, 0.58, 1);
+    }
+  }
+
+  @keyframes hero-swoosh-redraw {
+    from {
+      stroke-dashoffset: 1;
+    }
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero__accent:hover .hero__swoosh path {
+      animation: none;
+    }
+  }
+
   .hero__sub {
     margin-top: 22px;
     max-width: 31ch;
