@@ -143,6 +143,10 @@ const measure = () => {
     h1: document.querySelectorAll('h1').length,
     overflowing: overflowing.slice(0, 6),
     dashes: (document.body.innerText.match(/[—–]/g) ?? []).length,
+    punctSpaces: [
+      ...(document.body.innerText.match(/[，。、；：！？）」][ \u00a0]/g) ?? []),
+      ...(document.body.innerText.match(/[ \u00a0][，。、；：！？）」]/g) ?? []),
+    ],
     emptyLinks: [...document.querySelectorAll('a')].filter((a) => !a.textContent.trim() && !a.getAttribute('aria-label')).length,
     imgsWithoutAlt: [...document.querySelectorAll('img')].filter((i) => !i.hasAttribute('alt')).length,
     jsonLdErrors: [...document.querySelectorAll('script[type="application/ld+json"]')].filter((s) => {
@@ -189,6 +193,9 @@ for (const viewport of viewports) {
       }
       if (report.h1 !== 1) fail(`${label}: h1 数量为 ${report.h1}`);
       if (report.dashes > 0) fail(`${label}: 正文出现破折号 ${report.dashes} 处`);
+      for (const s of report.punctSpaces.slice(0, 5)) {
+        fail(`${label}: 全角标点旁出现多余空格「${s.replace(/\u00a0/g, ' ')}」`);
+      }
       if (report.emptyLinks > 0) fail(`${label}: 有 ${report.emptyLinks} 个空链接`);
       if (report.imgsWithoutAlt > 0) fail(`${label}: 有 ${report.imgsWithoutAlt} 张图缺少 alt`);
       if (report.jsonLdErrors > 0) fail(`${label}: JSON-LD 无法解析 ${report.jsonLdErrors} 处`);

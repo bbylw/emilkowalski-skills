@@ -20,8 +20,9 @@
   --color-accent-ink: var(--accent-ink);
   --color-accent-soft: var(--accent-soft);
 
-  --font-sans: 'Geist Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --font-mono: 'Geist Mono Variable', ui-monospace, 'SFMono-Regular', 'Cascadia Mono', monospace;
+  /* Geist 只覆盖拉丁，中文按平台落到各自最好的黑体 */
+  --font-sans: 'Geist Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans SC', sans-serif;
+  --font-mono: 'Geist Mono Variable', ui-monospace, 'SFMono-Regular', 'Cascadia Mono', 'PingFang SC', 'Microsoft YaHei', monospace;
 
   --radius-card: 14px;
   --radius-ctl: 10px;
@@ -75,6 +76,8 @@
   html {
     -webkit-text-size-adjust: 100%;
     scroll-behavior: smooth;
+    /* 锚点落点避开 64px sticky 头部 */
+    scroll-padding-top: 88px;
   }
 
   @media (prefers-reduced-motion: reduce) {

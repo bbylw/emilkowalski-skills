@@ -1,5 +1,6 @@
 ---
 import Icon from './Icon.astro';
+import CopyButton from './CopyButton.astro';
 import { skills, groupLabel } from '../data/skills';
 
 const first = skills[0]!;
@@ -69,10 +70,13 @@ const first = skills[0]!;
           </div>
 
           <div class="sb__usage">
-            <p class="sb__col-label">可以这样提要求</p>
+            <div class="sb__usage-head">
+              <p class="sb__col-label">可以这样提要求</p>
+              <CopyButton from={`#sb-cmd-${skill.slug}`} label="复制提示词" />
+            </div>
             <p class="cmd sb__cmd">
               <span class="prompt">›</span>
-              <span>{skill.prompt}</span>
+              <span id={`sb-cmd-${skill.slug}`}>{skill.prompt}</span>
             </p>
           </div>
 
@@ -281,6 +285,17 @@ const first = skills[0]!;
     margin-top: 24px;
   }
 
+  .sb__usage-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .sb__usage-head .sb__col-label {
+    margin-bottom: 0;
+  }
+
   .sb__cmd {
     display: block;
     font-size: 13px;
@@ -338,6 +353,16 @@ const first = skills[0]!;
     border-bottom: 1px solid var(--line-strong);
     padding-bottom: 2px;
     transition: border-color 0.18s ease;
+  }
+
+  .sb__more .icon {
+    transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @media (hover: hover) {
+    .sb__more:hover .icon {
+      transform: translateX(4px);
+    }
   }
 
   .sb__more:hover {

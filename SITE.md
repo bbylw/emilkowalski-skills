@@ -34,6 +34,8 @@ scripts/verify.mjs  无头验收（见下）
 
 - 冷灰中性底 + 单一朱红强调（`--accent`），明暗两套令牌在 `html[data-theme]` 上整组翻转；boot 脚本先读 localStorage 再回退 `prefers-color-scheme`，首帧定主题防闪烁。
 - 分节用发丝线（`.band`），不堆卡片；标签/眉题一律 Geist Mono 小字号大 letter-spacing。
+- 产品的核心视觉是缓动曲线本身：MotionRace 每条轨道内用 1px 非缩放描边画出该道真实跑的 cubic-bezier（viewBox 时间→x、进度→y），是数据可视化不是装饰。
+- eyebrow 限额：眉题只放真实数据（「共 N 个」），标题本身能说明的节不加眉题。
 - 标题即导航，不加装饰性序号；数字只出现在真实数据（个数、时长、次数）里。
 - 正文禁 em dash / en dash（verify 会扫）。
 - 触屏纪律：hover 位移全部关 `@media (hover: hover)`；无 JS / reduced-motion 各有静态呈现路径。
@@ -56,7 +58,7 @@ bun run verify            # 或 node scripts/verify.mjs [baseUrl]
 `verify.mjs` 的量化检查（双主题 × 桌面/移动 × 5 条路由）：
 
 1. 横向溢出 / 元素越界（滚动容器内越界视为设计意图）；
-2. 每页恰好一个 `h1`、空链接、无 alt 图、破折号扫描；
+2. 每页恰好一个 `h1`、空链接、无 alt 图、破折号扫描、全角标点旁多余空格扫描（模板换行落在全角标点后会被渲染成空格，正文行必须整行书写）；
 3. JSON-LD 可解析性；
 4. **逐元素 WCAG 对比度**：canvas 像素回读归一化 `oklch` 等现代色（注意：`getComputedStyle` 原样返回 oklch 字符串，正则解析会静默漏检，必须画像素读 `getImageData`），正文/大字按 4.5/3 阈值判，多背景层按 alpha 混合；
 5. 交互回归：主题切换读写、深链选中、键盘切 tab、复制反馈 + live region、reduced-motion 静态终态。

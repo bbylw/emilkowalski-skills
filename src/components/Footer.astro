@@ -36,7 +36,13 @@ const year = new Date().getFullYear();
 
   <div class="shell footer__base">
     <p>本站是 emilkowalski/skills 的中文整理与延伸说明，内容版权归原作者所有。</p>
-    <p class="num">{year}</p>
+    <div class="footer__meta">
+      <a class="footer__top" href="#main">
+        回到顶部
+        <Icon name="arrow-right" size={13} class="footer__up" />
+      </a>
+      <p class="num">{year}</p>
+    </div>
   </div>
 </footer>
 
@@ -107,6 +113,29 @@ const year = new Date().getFullYear();
     border-top: 1px solid var(--line);
     font-size: 12.5px;
     color: var(--muted);
+  }
+
+  .footer__meta {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+  }
+
+  .footer__top {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12.5px;
+    color: var(--muted);
+    transition: color 0.18s ease;
+  }
+
+  .footer__top:hover {
+    color: var(--ink);
+  }
+
+  .footer__up {
+    transform: rotate(-90deg);
   }
 
   @media (min-width: 768px) {
