@@ -99,6 +99,7 @@ const measure = () => {
   for (const el of document.querySelectorAll('body *')) {
     const rect = el.getBoundingClientRect();
     if (rect.width === 0 || rect.height === 0) continue;
+    if (el.closest('svg')) continue; // SVG 子几何被 svg 视口裁切，越界不代表布局问题
     if (rect.right > vw + 1.5 || rect.left < -1.5) {
       const style = getComputedStyle(el);
       if (style.position === 'fixed' || inScroller(el)) continue;
@@ -205,8 +206,15 @@ for (const viewport of viewports) {
       for (const err of errors) fail(`${label}: 控制台报错 ${err.slice(0, 160)}`);
 
       if (viewport.name === 'desktop' && theme === 'light') {
-        // reveal 依赖真实滚动触发，fullPage 截图前先强制显示，避免长图空白
-        await page.addStyleTag({ content: '.js .reveal{opacity:1!important;transform:none!important}' });
+        // reveal 依赖真实滚动触发、hero 有入场动画：截图前统一钉成静态，避免长图空白/半程状态
+        await page.addStyleTag({
+          content: [
+            '.js .reveal{opacity:1!important;transform:none!important}',
+            '.hero__line-in{transform:none!important;animation:none!important}',
+            '.hero__sub,.hero__cta,.hero__device{opacity:1!important;transform:none!important;animation:none!important}',
+            '.hero__arc path,.hero__swoosh path{stroke-dashoffset:0!important;animation:none!important}',
+          ].join(''),
+        });
         const safe = route === '/' ? 'home' : route.replace(/\//g, '-').replace(/^-/, '');
         await page.screenshot({ path: `${outDir}/${safe}.png`, fullPage: true });
       }

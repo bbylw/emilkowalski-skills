@@ -96,6 +96,21 @@
     text-rendering: optimizeLegibility;
   }
 
+  /* 胶片颗粒：只挂在 fixed 伪元素上，不进滚动层，GPU 成本恒定 */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 70;
+    pointer-events: none;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  [data-theme='dark'] body::after {
+    opacity: 0.05;
+  }
+
   ::selection {
     background: var(--accent);
     color: var(--paper);
@@ -189,7 +204,23 @@
       transform 0.16s cubic-bezier(0.16, 1, 0.3, 1),
       background-color 0.2s ease,
       border-color 0.2s ease,
-      color 0.2s ease;
+      color 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+
+  @media (hover: hover) {
+    .btn-primary:hover,
+    .btn-ghost:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-card);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .btn-primary:hover,
+    .btn-ghost:hover {
+      transform: none;
+    }
   }
 
   .btn:active {

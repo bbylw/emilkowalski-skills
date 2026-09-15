@@ -131,12 +131,19 @@ const first = skills[0]!;
     cursor: pointer;
     transition:
       border-color 0.18s ease,
-      background-color 0.18s ease;
+      background-color 0.18s ease,
+      transform 0.18s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .sb__tab:hover {
     border-color: var(--line-strong);
     background: var(--sunken);
+  }
+
+  @media (min-width: 900px) and (hover: hover) {
+    .sb__tab:hover {
+      transform: translateX(3px);
+    }
   }
 
   .sb__tab.is-active {
