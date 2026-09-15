@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://skills.emilkowalski.dev/sitemap-index.xml
+Sitemap: https://emilkowalski-skills.ndjp.net/sitemap-index.xml
