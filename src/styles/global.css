@@ -24,8 +24,12 @@
   --font-sans: 'Geist Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans SC', sans-serif;
   --font-mono: 'Geist Mono Variable', ui-monospace, 'SFMono-Regular', 'Cascadia Mono', 'PingFang SC', 'Microsoft YaHei', monospace;
 
-  --radius-card: 14px;
+  /* 圆角只允许四档：容器 16 / 控件 10 / 小方块 8 / 胶囊 999（另加头像类全圆 50%）。
+     组件里不再出现硬编码的圆角数值。 */
+  --radius-card: 16px;
   --radius-ctl: 10px;
+  --radius-sm: 8px;
+  --radius-pill: 999px;
 }
 
 @layer base {
@@ -47,6 +51,9 @@
 
     --shadow-card: 0 1px 2px oklch(0.2 0.02 265 / 0.05), 0 12px 32px oklch(0.2 0.02 265 / 0.06);
     --shadow-lift: 0 2px 4px oklch(0.2 0.02 265 / 0.06), 0 24px 60px oklch(0.2 0.02 265 / 0.1);
+
+    /* 分节垂直节奏：所有分节共用一条曲线，段落间距才有统一的手感 */
+    --sec-y: clamp(66px, 9vw, 108px);
   }
 
   [data-theme='dark'] {
@@ -265,7 +272,7 @@
     height: 26px;
     padding-inline: 10px;
     border: 1px solid var(--line);
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     font-family: var(--font-mono);
     font-size: 11px;
     letter-spacing: 0.02em;
@@ -336,18 +343,19 @@
     font-variant-numeric: tabular-nums;
   }
 
-  /* 入场：只在启用 JS 且未要求减少动效时隐藏 */
+  /* 入场：只在启用 JS 且未要求减少动效时隐藏。
+     位移比早先版本略长：同样的缓动，走得远一点才像"落位"，而不是"抖一下"。 */
   .js .reveal {
     opacity: 0;
-    transform: translateY(16px);
+    transform: translateY(18px);
   }
 
   .js .reveal.is-in {
     opacity: 1;
     transform: none;
     transition:
-      opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1),
-      transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+      opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+      transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
     transition-delay: var(--reveal-delay, 0ms);
   }
 
@@ -389,4 +397,33 @@
       display: none;
     }
   }
+
+  /* 触屏点按不出现灰色高亮块，反馈一律由元素自身的 :active 表达 */
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* 没单独声明按下反馈的可点元素补一次 1px 下沉：一个页面里不该有的按得动、有的按不动。
+     放在 components 层内，特异性低于 .btn:active 之类的既有规则，不抢它们的手感。 */
+  :where(a, button, summary, [role='tab']):active {
+    transform: translateY(1px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :where(a, button, summary, [role='tab']):active {
+      transform: none;
+    }
+  }
+}
+
+/* ------------------------------------------------------------------------- */
+/*  滚动形态                                                                  */
+/*  页面离开顶部后顶栏收紧：描边变实、浮出投影、底色更实。                     */
+/*  数值经 @property 声明为可插值，动画由 CSS 滚动驱动，不注册滚动监听。        */
+/* ------------------------------------------------------------------------- */
+
+@property --nav-lift {
+  syntax: '<number>';
+  inherits: false;
+  initial-value: 0;
 }

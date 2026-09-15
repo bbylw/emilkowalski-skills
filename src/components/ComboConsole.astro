@@ -174,15 +174,15 @@ const first = playbooks[0]!;
   .cc__intro {
     display: grid;
     gap: 8px;
-    padding-bottom: 22px;
+    padding-bottom: 24px;
     border-bottom: 1px solid var(--line);
   }
 
   .cc__question {
-    font-size: clamp(20px, 2.4vw, 27px);
+    font-size: clamp(21px, 2.5vw, 29px);
     font-weight: 500;
-    letter-spacing: -0.02em;
-    line-height: 1.3;
+    letter-spacing: -0.024em;
+    line-height: 1.28;
   }
 
   /* ---- 链路 ---- */
@@ -201,6 +201,7 @@ const first = playbooks[0]!;
     border-left: 1px solid var(--line-strong);
   }
 
+  /* 流程节点用实心朱红点：它标的是次序，不是装饰 */
   .chain__node::before {
     content: '';
     position: absolute;
@@ -209,15 +210,15 @@ const first = playbooks[0]!;
     width: 9px;
     height: 9px;
     border-radius: 50%;
-    background: var(--paper);
-    box-shadow: 0 0 0 2px var(--accent);
+    background: var(--accent);
+    box-shadow: 0 0 0 3px var(--paper);
     transition: box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .chain__node:hover::before {
     box-shadow:
-      0 0 0 2px var(--accent),
-      0 0 0 7px color-mix(in oklab, var(--accent) 18%, transparent);
+      0 0 0 3px var(--paper),
+      0 0 0 8px color-mix(in oklab, var(--accent) 16%, transparent);
   }
 
   .cc__panel.is-active .chain__node {
@@ -356,13 +357,14 @@ const first = playbooks[0]!;
   @media (min-width: 900px) {
     .cc {
       grid-template-columns: 300px 1fr;
-      gap: 32px;
+      gap: 36px;
       align-items: start;
     }
 
+    /* 与 SkillBrowser 共用同一套索引语言：发丝线分隔 + 左侧朱红竖条 */
     .cc__list {
       display: grid;
-      gap: 4px;
+      gap: 0;
       overflow: visible;
       position: sticky;
       top: 88px;
@@ -371,13 +373,26 @@ const first = playbooks[0]!;
     .cc__tab {
       max-width: none;
       border: 0;
-      border-radius: 10px;
-      padding: 10px 12px;
+      border-top: 1px solid color-mix(in oklab, var(--line) 55%, transparent);
+      border-radius: var(--radius-sm);
+      padding: 12px 12px 13px;
+    }
+
+    .cc__tab:first-child {
+      border-top-color: transparent;
     }
 
     .cc__tab.is-active {
       background: var(--sunken);
       box-shadow: inset 2px 0 0 var(--accent);
+    }
+
+    .cc__tab.is-active .cc__tab-title {
+      color: var(--ink);
+    }
+
+    .cc__tab.is-active .cc__tab-scene {
+      color: var(--ink-soft);
     }
 
     .cc__split {

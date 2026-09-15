@@ -182,7 +182,7 @@ const logos = [siVercel, siLinear, siApple, siExpo, siSwift];
   /* ---- hero ---- */
   .hero {
     position: relative;
-    padding-block: 44px 56px;
+    padding-block: 48px 60px;
   }
 
   .hero__arc {
@@ -191,6 +191,17 @@ const logos = [siVercel, siLinear, siApple, siExpo, siSwift];
     width: 100%;
     height: 100%;
     pointer-events: none;
+    /* 画完之后随滚动缓缓下沉淡出：母题让位给正文，而不是一直悬在首屏 */
+    animation: hero-arc-drift linear both;
+    animation-timeline: scroll(root);
+    animation-range: 0px 70vh;
+  }
+
+  @keyframes hero-arc-drift {
+    to {
+      transform: translateY(38px);
+      opacity: 0;
+    }
   }
 
   .hero__arc path {
@@ -213,14 +224,14 @@ const logos = [siVercel, siLinear, siApple, siExpo, siSwift];
     position: relative;
     display: grid;
     grid-template-columns: 1fr;
-    gap: 40px;
+    gap: 44px;
     align-items: center;
   }
 
   .hero__title {
-    font-size: clamp(38px, 6.2vw, 82px);
-    line-height: 1.04;
-    letter-spacing: -0.035em;
+    font-size: clamp(40px, 6.4vw, 88px);
+    line-height: 1.02;
+    letter-spacing: -0.038em;
     font-weight: 500;
   }
 
@@ -274,10 +285,10 @@ const logos = [siVercel, siLinear, siApple, siExpo, siSwift];
   }
 
   .hero__sub {
-    margin-top: 20px;
-    max-width: 30ch;
+    margin-top: 22px;
+    max-width: 31ch;
     font-size: clamp(15px, 1.4vw, 17.5px);
-    line-height: 1.65;
+    line-height: 1.68;
     color: var(--muted);
     opacity: 0;
     transform: translateY(14px);
@@ -288,7 +299,7 @@ const logos = [siVercel, siLinear, siApple, siExpo, siSwift];
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
-    margin-top: 30px;
+    margin-top: 32px;
     opacity: 0;
     transform: translateY(14px);
     animation: hero-enter 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.54s forwards;
@@ -308,6 +319,12 @@ const logos = [siVercel, siLinear, siApple, siExpo, siSwift];
   }
 
   @media (prefers-reduced-motion: reduce) {
+    .hero__arc {
+      transform: none;
+      opacity: 1;
+      animation: none;
+    }
+
     .hero__line-in,
     .hero__sub,
     .hero__cta,
@@ -326,25 +343,28 @@ const logos = [siVercel, siLinear, siApple, siExpo, siSwift];
 
   /* ---- 出处 ---- */
   .prov {
-    padding-block: 22px;
+    padding-block: 24px;
   }
 
   .prov__inner {
     display: flex;
     align-items: center;
-    gap: 22px;
+    gap: 20px;
     flex-wrap: wrap;
   }
 
+  /* 标签与标记之间用发丝线隔开，代替再加一个装饰符号 */
   .prov__label {
     margin: 0;
     flex: none;
+    padding-right: 20px;
+    border-right: 1px solid var(--line);
   }
 
   .prov__logos {
     display: flex;
     align-items: center;
-    gap: 26px;
+    gap: 28px;
     margin: 0;
     padding: 0;
     list-style: none;
@@ -356,8 +376,10 @@ const logos = [siVercel, siLinear, siApple, siExpo, siSwift];
     transition: color 0.18s ease;
   }
 
-  .prov__logos li:hover {
-    color: var(--ink);
+  @media (hover: hover) {
+    .prov__logos li:hover {
+      color: var(--ink);
+    }
   }
 
   .prov__logos svg {
@@ -366,21 +388,21 @@ const logos = [siVercel, siLinear, siApple, siExpo, siSwift];
 
   /* ---- 通用分节 ---- */
   .sec {
-    padding-block: 72px;
+    padding-block: var(--sec-y);
   }
 
   .sec__head {
     display: grid;
-    gap: 14px;
-    margin-bottom: 40px;
-    max-width: 68ch;
+    gap: 16px;
+    margin-bottom: 44px;
+    max-width: 62ch;
   }
 
   .sec__title {
     margin-top: 12px;
-    font-size: clamp(27px, 3.6vw, 44px);
-    line-height: 1.14;
-    letter-spacing: -0.03em;
+    font-size: clamp(28px, 3.8vw, 46px);
+    line-height: 1.12;
+    letter-spacing: -0.032em;
   }
 
   .sec__head h2:first-child {
@@ -389,13 +411,13 @@ const logos = [siVercel, siLinear, siApple, siExpo, siSwift];
 
   .sec__body {
     font-size: 14.5px;
-    line-height: 1.75;
+    line-height: 1.78;
     color: var(--muted);
-    max-width: 62ch;
+    max-width: 58ch;
   }
 
   .sec__more {
-    margin-top: 28px;
+    margin-top: 30px;
     font-size: 14px;
   }
 
@@ -403,14 +425,14 @@ const logos = [siVercel, siLinear, siApple, siExpo, siSwift];
   .taste {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 32px;
+    gap: 36px;
   }
 
   .taste__title {
     margin-top: 12px;
-    font-size: clamp(27px, 3.6vw, 44px);
-    line-height: 1.14;
-    letter-spacing: -0.03em;
+    font-size: clamp(28px, 3.8vw, 46px);
+    line-height: 1.12;
+    letter-spacing: -0.032em;
   }
 
   .taste__lead .taste__title:first-child {
@@ -418,7 +440,7 @@ const logos = [siVercel, siLinear, siApple, siExpo, siSwift];
   }
 
   .taste__body {
-    margin-top: 16px;
+    margin-top: 18px;
     font-size: 14.5px;
     line-height: 1.8;
     color: var(--muted);
@@ -429,7 +451,7 @@ const logos = [siVercel, siLinear, siApple, siExpo, siSwift];
     display: inline-flex;
     align-items: center;
     gap: 7px;
-    margin-top: 22px;
+    margin-top: 24px;
     font-size: 14px;
     color: var(--ink);
   }
@@ -452,12 +474,12 @@ const logos = [siVercel, siLinear, siApple, siExpo, siSwift];
 
   /* ---- 引文 ---- */
   .quote {
-    padding-block: 84px;
+    padding-block: clamp(72px, 9vw, 116px);
   }
 
   .quote__inner {
     display: grid;
-    gap: 20px;
+    gap: 22px;
   }
 
   .quote__mark {
@@ -465,32 +487,43 @@ const logos = [siVercel, siLinear, siApple, siExpo, siSwift];
     line-height: 0.6;
     font-weight: 500;
     color: var(--accent);
-    margin-left: 22px;
+    margin-left: 24px;
   }
 
   .quote__text {
     margin: 0;
     max-width: 30ch;
-    padding-left: 22px;
+    padding-left: 24px;
     border-left: 2px solid var(--accent);
-    font-size: clamp(24px, 3.4vw, 40px);
-    line-height: 1.32;
-    letter-spacing: -0.025em;
+    font-size: clamp(25px, 3.6vw, 42px);
+    line-height: 1.3;
+    letter-spacing: -0.026em;
     font-weight: 450;
     text-wrap: balance;
   }
 
+  /* 署名前的短横线，把"谁说的"和"说了什么"接起来 */
   .quote__by {
+    display: flex;
+    align-items: center;
+    gap: 10px;
     font-family: var(--font-mono);
     font-size: 12px;
     color: var(--muted);
+  }
+
+  .quote__by::before {
+    content: '';
+    width: 16px;
+    height: 1px;
+    background: var(--accent);
   }
 
   /* ---- 安装 ---- */
   .install {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 32px;
+    gap: 34px;
   }
 
   .install__cmd {
@@ -504,12 +537,18 @@ const logos = [siVercel, siLinear, siApple, siExpo, siSwift];
     flex: 1 1 320px;
   }
 
+  /* 三条说明用发丝线分节，不堆成三张卡片 */
   .install__notes {
     display: grid;
     gap: 18px;
     margin: 0;
     padding: 0;
     list-style: none;
+  }
+
+  .install__notes li + li {
+    padding-top: 18px;
+    border-top: 1px solid var(--line);
   }
 
   .install__k {
@@ -527,17 +566,17 @@ const logos = [siVercel, siLinear, siApple, siExpo, siSwift];
 
   @media (min-width: 900px) {
     .hero {
-      padding-block: 64px 84px;
+      padding-block: 72px 96px;
     }
 
     .hero__grid {
-      grid-template-columns: 1.02fr 1fr;
-      gap: 56px;
+      grid-template-columns: 1.04fr 1fr;
+      gap: 60px;
     }
 
     .taste {
       grid-template-columns: 4fr 8fr;
-      gap: 48px;
+      gap: 52px;
     }
 
     .taste__lead {
@@ -554,10 +593,6 @@ const logos = [siVercel, siLinear, siApple, siExpo, siSwift];
       grid-template-columns: 1fr 1fr;
       gap: 56px;
       align-items: start;
-    }
-
-    .sec {
-      padding-block: 88px;
     }
   }
 </style>

@@ -67,19 +67,19 @@ const usedIn = (slug: string) => playbooks.filter((p) => p.chain.some((c) => c.s
 
 <style>
   .page {
-    padding-block: 48px 40px;
+    padding-block: 52px 48px;
   }
 
   .page__head {
-    max-width: 62ch;
-    padding-bottom: 44px;
+    max-width: 60ch;
+    padding-bottom: 48px;
   }
 
   .page__title {
     margin-top: 14px;
-    font-size: clamp(34px, 5vw, 58px);
-    line-height: 1.08;
-    letter-spacing: -0.035em;
+    font-size: clamp(34px, 5.2vw, 60px);
+    line-height: 1.06;
+    letter-spacing: -0.038em;
   }
 
   .page__body {
@@ -90,24 +90,26 @@ const usedIn = (slug: string) => playbooks.filter((p) => p.chain.some((c) => c.s
   }
 
   .group {
-    padding-block: 34px;
+    padding-block: 38px;
     border-top: 1px solid var(--line);
   }
 
+  /* 组标题与说明竖排：一个分节只讲一件事 */
   .group__head {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: 14px;
-    margin-bottom: 22px;
+    display: grid;
+    gap: 8px;
+    margin-bottom: 24px;
+    max-width: 56ch;
   }
 
   .group__title {
-    font-size: 20px;
+    font-size: 21px;
+    letter-spacing: -0.02em;
   }
 
   .group__note {
     font-size: 13px;
+    line-height: 1.7;
     color: var(--muted);
   }
 
@@ -120,25 +122,29 @@ const usedIn = (slug: string) => playbooks.filter((p) => p.chain.some((c) => c.s
   .skill {
     display: flex;
     flex-direction: column;
-    padding: 20px;
+    padding: 22px;
     background: var(--surface);
     border: 1px solid var(--line);
     border-radius: var(--radius-card);
     transition:
-      transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+      transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
       border-color 0.2s ease,
-      box-shadow 0.2s ease;
+      box-shadow 0.22s ease;
   }
 
-  .skill:hover {
-    border-color: color-mix(in oklab, var(--accent) 45%, var(--line));
-    box-shadow: var(--shadow-card);
-  }
-
+  /* 悬停时左侧压一条 2px 朱红，和两处索引里的选中态是同一套语汇 */
   @media (hover: hover) {
     .skill:hover {
+      border-color: color-mix(in oklab, var(--accent) 40%, var(--line));
+      box-shadow:
+        inset 2px 0 0 var(--accent),
+        var(--shadow-card);
       transform: translateY(-2px);
     }
+  }
+
+  .skill:focus-visible {
+    border-color: var(--accent);
   }
 
   .skill:active {
@@ -228,7 +234,7 @@ const usedIn = (slug: string) => playbooks.filter((p) => p.chain.some((c) => c.s
 
   @media (min-width: 1040px) {
     .page {
-      padding-block: 72px 40px;
+      padding-block: 80px 48px;
     }
 
     .group__grid {

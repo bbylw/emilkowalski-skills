@@ -160,7 +160,7 @@ const stageLabel = primaryStage ? stages.find((s) => s.id === primaryStage)?.lab
 
 <style>
   .page {
-    padding-block: 40px 20px;
+    padding-block: 44px 24px;
   }
 
   .back {
@@ -181,7 +181,7 @@ const stageLabel = primaryStage ? stages.find((s) => s.id === primaryStage)?.lab
   }
 
   .head {
-    padding-block: 30px 34px;
+    padding-block: 32px 38px;
     border-bottom: 1px solid var(--line);
   }
 
@@ -226,27 +226,39 @@ const stageLabel = primaryStage ? stages.find((s) => s.id === primaryStage)?.lab
   }
 
   .block {
-    padding-bottom: 28px;
+    padding-bottom: 30px;
   }
 
   .block + .block {
-    padding-top: 28px;
+    padding-top: 30px;
     border-top: 1px solid var(--line);
   }
 
+  /* 分节标签前压一条 12px 朱红短线：它是结构标记，不额外加序号或图标 */
   .block__title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
     font-family: var(--font-mono);
     font-size: 11px;
     letter-spacing: 0.16em;
     text-transform: uppercase;
-    color: var(--muted);
+    color: var(--ink-soft);
     margin-bottom: 16px;
   }
 
+  .block__title::before {
+    content: '';
+    width: 12px;
+    height: 1px;
+    flex: none;
+    background: var(--accent);
+  }
+
   .job {
-    font-size: clamp(19px, 2.4vw, 26px);
-    line-height: 1.4;
-    letter-spacing: -0.02em;
+    font-size: clamp(21px, 2.6vw, 29px);
+    line-height: 1.38;
+    letter-spacing: -0.024em;
     max-width: 30ch;
   }
 
@@ -345,8 +357,8 @@ const stageLabel = primaryStage ? stages.find((s) => s.id === primaryStage)?.lab
   .aside__link {
     display: grid;
     gap: 3px;
-    padding: 8px 9px;
-    border-radius: 9px;
+    padding: 9px 10px;
+    border-radius: var(--radius-sm);
     transition: background-color 0.18s ease;
   }
 
@@ -396,8 +408,14 @@ const stageLabel = primaryStage ? stages.find((s) => s.id === primaryStage)?.lab
     transition: border-color 0.18s ease;
   }
 
+  /* 与卡片、索引同一套语汇：悬停时朱红压边，方向随卡片朝向 */
   .pager__item:hover {
-    border-color: var(--ink);
+    border-color: color-mix(in oklab, var(--accent) 45%, var(--line));
+    box-shadow: inset 2px 0 0 var(--accent);
+  }
+
+  .pager__item--next:hover {
+    box-shadow: inset -2px 0 0 var(--accent);
   }
 
   .pager__item--next {
@@ -410,7 +428,7 @@ const stageLabel = primaryStage ? stages.find((s) => s.id === primaryStage)?.lab
 
   @media (min-width: 900px) {
     .page {
-      padding-block: 56px 40px;
+      padding-block: 64px 48px;
     }
 
     .body {

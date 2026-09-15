@@ -126,7 +126,7 @@ import Icon from './Icon.astro';
     height: 30px;
     padding-inline: 10px;
     border: 1px solid var(--line);
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     background: transparent;
     color: var(--muted);
     font-family: var(--font-mono);
@@ -149,8 +149,8 @@ import Icon from './Icon.astro';
   .cmp__row {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 16px;
-    padding-block: 26px;
+    gap: 18px;
+    padding-block: 30px;
     border-top: 1px solid var(--line);
   }
 
@@ -176,6 +176,13 @@ import Icon from './Icon.astro';
     display: grid;
     gap: 10px;
     align-content: start;
+  }
+
+  /* 每行右侧那格永远是"更好的做法"：左侧压一条 2px 朱红作为唯一提示，
+     与全站"朱红 = 当前 / 正确"的用法同一套语义，不再引入第二种提示色。 */
+  .cmp__pair .cmp__cell:last-child .cmp__stage {
+    border-color: color-mix(in oklab, var(--accent) 34%, var(--line));
+    box-shadow: inset 2px 0 0 var(--accent);
   }
 
   .cmp__chip-ok {
@@ -261,7 +268,8 @@ import Icon from './Icon.astro';
     position: relative;
     width: 100%;
     height: 26px;
-    border-radius: 999px;
+    /* 进度槽属于胶囊类，走全圆；只有曲线画布才用 8px 方块（见 MotionRace） */
+    border-radius: var(--radius-pill);
     background: color-mix(in oklab, var(--line) 55%, transparent);
   }
 
@@ -304,7 +312,7 @@ import Icon from './Icon.astro';
   .cmp__grow {
     width: 100%;
     padding: 10px 12px;
-    border-radius: 10px;
+    border-radius: var(--radius-ctl);
     background: var(--surface);
     border: 1px solid var(--line);
     font-size: 12.5px;

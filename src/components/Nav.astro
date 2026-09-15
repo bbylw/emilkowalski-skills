@@ -60,8 +60,9 @@ const path = Astro.url.pathname.replace(/\/$/, '') || '/';
       </details>
     </div>
 
-    <span class="scroll-progress" aria-hidden="true"></span>
   </div>
+
+  <span class="scroll-progress" aria-hidden="true"></span>
 </header>
 
 <style>
@@ -69,9 +70,30 @@ const path = Astro.url.pathname.replace(/\/$/, '') || '/';
     position: sticky;
     top: 0;
     z-index: 50;
-    border-bottom: 1px solid var(--line);
-    background: color-mix(in oklab, var(--paper) 86%, transparent);
+    /* 离开页首后收紧：底部描边从透明到实线、底色变实、浮出一层投影。
+       --nav-lift 在 global.css 用 @property 声明为可插值，时间线是 scroll(root)，
+       全程不注册滚动监听；不支持滚动驱动的浏览器会直接停在终态，仍然可读。 */
+    --nav-lift: 0;
+    border-bottom: 1px solid color-mix(in oklab, var(--line) calc(var(--nav-lift) * 100%), transparent);
+    background: color-mix(in oklab, var(--paper) calc(78% + var(--nav-lift) * 14%), transparent);
     backdrop-filter: blur(14px) saturate(140%);
+    box-shadow: 0 14px 30px -22px color-mix(in oklab, var(--ink) calc(var(--nav-lift) * 85%), transparent);
+    animation: nav-lift linear both;
+    animation-timeline: scroll(root);
+    animation-range: 0px 96px;
+  }
+
+  @keyframes nav-lift {
+    to {
+      --nav-lift: 1;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .nav {
+      --nav-lift: 1;
+      animation: none;
+    }
   }
 
   @supports not (backdrop-filter: blur(4px)) {
@@ -103,14 +125,20 @@ const path = Astro.url.pathname.replace(/\/$/, '') || '/';
     min-width: 0;
   }
 
+  /* 品牌标记：18px 的斜切方块。圆角 5px 是标记专用值，不并入圆角四档 */
   .nav__mark {
     width: 18px;
     height: 18px;
     border-radius: 5px;
     background:
-      linear-gradient(135deg, var(--accent) 0%, var(--accent) 46%, transparent 46%),
-      color-mix(in oklab, var(--ink) 26%, transparent);
-    box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--ink) 22%, transparent);
+      linear-gradient(135deg, var(--accent) 0%, var(--accent) 48%, transparent 48%),
+      color-mix(in oklab, var(--ink) 24%, transparent);
+    box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--ink) 20%, transparent);
+    transition: box-shadow 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .nav__brand:hover .nav__mark {
+    box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--accent) 55%, transparent);
   }
 
   .nav__word {
@@ -133,14 +161,39 @@ const path = Astro.url.pathname.replace(/\/$/, '') || '/';
   }
 
   .nav__link {
+    position: relative;
     font-size: 14px;
     color: var(--muted);
     transition: color 0.18s ease;
   }
 
+  /* 当前页除了变色，再压一条 1px 朱红短线：扫一眼就知道自己在哪 */
+  .nav__link::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -7px;
+    height: 1px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: 0 50%;
+    transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
   .nav__link:hover,
   .nav__link.is-active {
     color: var(--ink);
+  }
+
+  .nav__link.is-active::after {
+    transform: scaleX(1);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .nav__link::after {
+      transition: none;
+    }
   }
 
   .nav__actions {
@@ -217,7 +270,7 @@ const path = Astro.url.pathname.replace(/\/$/, '') || '/';
 
   .nav__panel-link {
     padding: 9px 10px;
-    border-radius: 8px;
+    border-radius: var(--radius-sm);
     font-size: 14px;
     color: var(--ink-soft);
   }

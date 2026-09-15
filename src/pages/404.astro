@@ -6,7 +6,7 @@ import Icon from '../components/Icon.astro';
 <Base title="页面不存在">
   <section class="nf">
     <div class="shell nf__inner">
-      <p class="label num">404</p>
+      <p class="nf__code num">404</p>
       <h1 class="nf__title">这个地址没有内容</h1>
       <p class="nf__body">
         链接可能已经改动，或者从来就不存在。回首页看概览，或者直接进组合手册挑一条流水线。
@@ -24,15 +24,24 @@ import Icon from '../components/Icon.astro';
 
 <style>
   .nf {
-    padding-block: 96px 120px;
+    padding-block: clamp(88px, 12vw, 140px) clamp(96px, 12vw, 150px);
   }
 
   .nf__inner {
     max-width: 56ch;
   }
 
+  /* 404 是真实的错误码，让它在版面上占足分量，而不是一行小号灰字 */
+  .nf__code {
+    font-family: var(--font-mono);
+    font-size: clamp(56px, 9vw, 104px);
+    line-height: 1;
+    letter-spacing: -0.04em;
+    color: var(--accent);
+  }
+
   .nf__title {
-    margin-top: 16px;
+    margin-top: 18px;
     font-size: clamp(30px, 4.5vw, 48px);
     line-height: 1.1;
     letter-spacing: -0.035em;
