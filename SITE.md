@@ -40,6 +40,7 @@ scripts/verify.mjs  无头验收（见下）
 - 标题即导航，不加装饰性序号；数字只出现在真实数据（个数、时长、次数）里。
 - 正文禁 em dash / en dash（verify 会扫）。
 - 触屏纪律：hover 位移全部关 `@media (hover: hover)`；无 JS / reduced-motion 各有静态呈现路径。
+- 滚动驱动动效（`animation-timeline: scroll(root)`）必须拆成两条规则写：`animation` 简写一条，`animation-timeline` 单独一条且用 `body ` 前缀抬高特异度。同一选择器里连着写，压缩器会把 timeline 折进简写变成 `animation: nav-lift linear both scroll(root)`，而 Chrome 的简写解析不接受 `scroll()`，整条声明作废、动画根本不创建（进度条因为早先就拆开写而幸存）。
 - 中文排版渐进增强：`text-autospace`（中英/数字间自动加隙，Chrome 128+）与标题 `word-break: auto-phrase`（按短语断行，Chrome 119+），旧引擎整条忽略、无副作用。
 - 系统级「更高对比度」偏好（`prefers-contrast: more`）只提令牌档位（`--muted` / `--line` / `--line-strong`），不产生第二套组件样式。
 
@@ -64,7 +65,8 @@ bun run verify            # 或 node scripts/verify.mjs [baseUrl]
 2. 每页恰好一个 `h1`、空链接、无 alt 图、破折号扫描、全角标点旁多余空格扫描（模板换行落在全角标点后会被渲染成空格，正文行必须整行书写）；
 3. JSON-LD 可解析性；
 4. **逐元素 WCAG 对比度**：canvas 像素回读归一化 `oklch` 等现代色（注意：`getComputedStyle` 原样返回 oklch 字符串，正则解析会静默漏检，必须画像素读 `getImageData`），正文/大字按 4.5/3 阈值判，多背景层按 alpha 混合；
-5. 交互回归：主题切换读写、深链选中、键盘切 tab、复制反馈 + live region、reduced-motion 静态终态。
+5. 交互回归：主题切换读写、深链选中、键盘切 tab、复制反馈 + live region、reduced-motion 静态终态；
+6. 滚动驱动回归：`.nav` 的 `getAnimations()` 必须非空（专抓「声明被压缩器折废」这类静默死亡），且滚动 400px 后 `--nav-lift` 到 1、hero 弧线 opacity 下降、进度条 `scaleX` 增长。
 
 截图输出到 `.shots/`（不入库）：fullPage 截图前会强制 reveal 显示，避免长图空白。
 
