@@ -193,8 +193,12 @@ const logos = [siVercel, siLinear, siApple, siExpo, siSwift];
     pointer-events: none;
     /* 画完之后随滚动缓缓下沉淡出：母题让位给正文，而不是一直悬在首屏 */
     animation: hero-arc-drift linear both;
-    animation-timeline: scroll(root);
     animation-range: 0px 70vh;
+  }
+
+  /* 时间线单独一条更高特异度规则，防压缩器折进 animation 简写后 Chrome 解析作废 */
+  body .hero__arc {
+    animation-timeline: scroll(root);
   }
 
   @keyframes hero-arc-drift {

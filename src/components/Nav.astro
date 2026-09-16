@@ -79,8 +79,13 @@ const path = Astro.url.pathname.replace(/\/$/, '') || '/';
     backdrop-filter: blur(14px) saturate(140%);
     box-shadow: 0 14px 30px -22px color-mix(in oklab, var(--ink) calc(var(--nav-lift) * 85%), transparent);
     animation: nav-lift linear both;
-    animation-timeline: scroll(root);
     animation-range: 0px 96px;
+  }
+
+  /* 时间线必须单独一条更高特异度规则：压缩器会把同选择器的 animation-* 折进
+     animation 简写，而 Chrome 简写解析不接受 scroll()，整条声明作废、动画不创建 */
+  body .nav {
+    animation-timeline: scroll(root);
   }
 
   @keyframes nav-lift {

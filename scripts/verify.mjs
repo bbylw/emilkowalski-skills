@@ -331,6 +331,28 @@ for (const viewport of viewports) {
   await rm.close();
   await rmContext.close();
 
+  // 6. 滚动驱动动效：动画必须真实创建且随滚动取值（防压缩器把 animation-timeline 折进简写导致声明作废）
+  const sd = await context.newPage();
+  await sd.goto(base + '/', { waitUntil: 'load' });
+  await sd.waitForTimeout(2600);
+  const sdTop = await sd.evaluate(() => ({
+    anims: document.querySelector('.nav').getAnimations().length,
+    lift: Number(getComputedStyle(document.querySelector('.nav')).getPropertyValue('--nav-lift')),
+    bar: new DOMMatrixReadOnly(getComputedStyle(document.querySelector('.scroll-progress')).transform).m11,
+  }));
+  await sd.evaluate(() => scrollTo(0, 400));
+  await sd.waitForTimeout(300);
+  const sdScrolled = await sd.evaluate(() => ({
+    lift: Number(getComputedStyle(document.querySelector('.nav')).getPropertyValue('--nav-lift')),
+    arcOpacity: Number(getComputedStyle(document.querySelector('.hero__arc')).opacity),
+    bar: new DOMMatrixReadOnly(getComputedStyle(document.querySelector('.scroll-progress')).transform).m11,
+  }));
+  if (sdTop.anims === 0) fail(`${label}: .nav 上没有创建任何动画（滚动驱动声明可能被压缩器折废）`);
+  if (!(sdScrolled.lift > 0.5)) fail(`${label}: 滚动 400px 后 --nav-lift 应为 1，实际 ${sdScrolled.lift}`);
+  if (!(sdScrolled.arcOpacity < 0.95)) fail(`${label}: 滚动后 hero 弧线未随滚动淡出（opacity=${sdScrolled.arcOpacity}）`);
+  if (!(sdScrolled.bar > sdTop.bar + 0.01)) fail(`${label}: 阅读进度条未随滚动增长（${sdTop.bar} → ${sdScrolled.bar}）`);
+  await sd.close();
+
   await context.close();
 }
 
