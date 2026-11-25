@@ -20,7 +20,7 @@
 
 ```
 src/
-  data/        skills.ts（13 个 skill 的结构化内容）、playbooks.ts（6 条组合链）、site.ts（站点常量，描述文案由 skills.length 派生）
+  data/        skills.ts（20 个 skill 的结构化内容）、playbooks.ts（6 条组合链）、site.ts（站点常量，描述文案由 skills.length 派生）
   layouts/     Base.astro（head、主题 boot 脚本、字体 preload、JSON-LD 之外的公共壳）
   components/  Nav / Footer / Icon / CopyButton / Breadcrumbs（JSON-LD）
                MotionRace、CompareRows（动效对照装置）、SkillBrowser、ComboConsole（两个交互式浏览器）

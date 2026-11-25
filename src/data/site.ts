@@ -5,7 +5,7 @@ export const site = {
   title: '面向设计师与工程师的 Skills',
   description: `emilkowalski/skills 的中文整理：${skills.length} 个把动效与界面判断写成规则的 skill，以及把它们串起来时真正发挥作用的方式。`,
   install: 'npx skills@latest add emilkowalski/skills',
-  subscribe: 'https://animations.dev/skills',
+  subscribe: 'https://aiforui.dev/newsletter',
   repo: 'https://github.com/emilkowalski/skills',
   skillsSh: 'https://skills.sh/emilkowalski/skills',
   author: 'Emil Kowalski',

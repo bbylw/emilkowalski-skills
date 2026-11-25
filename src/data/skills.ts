@@ -19,10 +19,10 @@ export type Skill = {
 };
 
 export const groups: { id: GroupId; label: string; note: string }[] = [
-  { id: 'motion', label: '动效', note: '曲线、时长、属性，以及判断它们对不对的规则' },
+  { id: 'motion', label: '动效', note: '曲线、时长、编排、性能，以及判断它们对不对的规则' },
   { id: 'design', label: '设计判断', note: '界面层级、平台语汇，以及动手前先看几个方向' },
   { id: 'platform', label: '平台与端', note: '把同一套标准带到手机、原生与 Swift' },
-  { id: 'craft', label: '工程细节', note: '选库与收尾，把最后一段做到位' },
+  { id: 'craft', label: '工程细节', note: '选库、压测、沉淀与导航，把最后一段做到位' },
 ];
 
 export const skills: Skill[] = [
@@ -172,6 +172,78 @@ export const skills: Skill[] = [
     href: 'https://github.com/emilkowalski/skills/blob/main/skills/find-animation-opportunities/SKILL.md',
   },
   {
+    slug: 'remove-animations',
+    name: 'remove-animations',
+    title: '删掉多余的动效',
+    group: 'motion',
+    tagline: '有时最好的动效是不动',
+    job: '逐条审判已有动效，只做减法',
+    summary:
+      '它的站位和找机会相反：把每一处已有动效放到同一张审判桌上，删掉或削弱那些说不出理由的。键盘触发的操作、高频出现的界面、纯装饰，一律按「没有也能用」处理。它只删不加，也不顺手去调别人的曲线。',
+    when: [
+      '应用「感觉变慢了」，却一直在加动效',
+      '每个可交互的元素都要淡入、缩放或弹一下',
+      '想验证现有的动效里哪些真的在帮忙',
+    ],
+    does: [
+      { k: '审判', v: '键盘操作、高频界面、功能数据、无目的装饰四类先出局' },
+      { k: '只减', v: '只删除与削弱，不改曲线、不重设弹簧，该修的另记一条' },
+      { k: '查依赖', v: '删之前确认没有元素靠它才可见、没有卸载时序靠它维持' },
+      { k: '留证据', v: '每条删除都写明是哪一条规则判的，方便回滚与讨论' },
+    ],
+    prompt: '用 remove-animations 过一遍这个页面，列出该删的动效和删除理由。',
+    pairs: ['find-animation-opportunities', 'improve-animations', 'review-animations'],
+    href: 'https://github.com/emilkowalski/skills/blob/main/skills/remove-animations/SKILL.md',
+  },
+  {
+    slug: 'choreograph',
+    name: 'choreograph',
+    title: '多个元素一起动',
+    group: 'motion',
+    tagline: '谁先动，谁等，谁不动',
+    job: '把一组同时发生的动效排成一次有意的动作',
+    summary:
+      '一旦同一事件里有多个元素要动，问题就从「这处怎么动」变成「它们之间什么关系」。这个 skill 只处理关系：顺序、重叠、时长与静止。默认做法是砍掉多余的运动部件、让剩下的并排跑，只有顺序本身携带含义时才排队。',
+    when: [
+      '列表错峰入场、hero 入场、容器内的视图切换',
+      '一个元素离开，兄弟元素要补上它让出的位置',
+      '几处动效各自动得都对，合起来却显得机械、开得慢',
+    ],
+    does: [
+      { k: '定角色', v: '先分出主角、配角与背景，只有主角先动、动得最远' },
+      { k: '一层入场', v: '父容器入场时子元素已经在位，不叠两层入场' },
+      { k: '禁齐步', v: '高频与键盘触发的界面不错峰，避免每次使用都等一遍' },
+      { k: '可打断', v: '连点或中途重触发时序列能接住，不重播、不跳序' },
+    ],
+    prompt: '用 choreograph 排这个列表的入场：哪些先动、错峰多少、哪些保持不动。',
+    pairs: ['animate', 'remove-animations', 'review-animations'],
+    href: 'https://github.com/emilkowalski/skills/blob/main/skills/choreograph/SKILL.md',
+  },
+  {
+    slug: 'animation-performance',
+    name: 'animation-performance',
+    title: '动效掉帧排查',
+    group: 'motion',
+    tagline: '每一帧都要在预算内画完',
+    job: '定位掉帧的真正成因，而不是先加 will-change',
+    summary:
+      '它不问「好不好看」，只问「每帧来不来得及」。从症状出发：整体卡顿、只在导航时卡、阴影动画不平滑、拖拽越用越卡，每种症状都对应确定的成因与改法。基准设备是中端手机，120Hz 屏上每帧只有 8ms。',
+    when: [
+      '真机上掉帧，开发机上却顺滑',
+      '要在 CSS、WAAPI 与 JS 之间做性能取舍',
+      '准备加 will-change 或 GPU 图层之前',
+    ],
+    does: [
+      { k: '分症状', v: '先按症状表对上成因，再谈改法' },
+      { k: '降层级', v: '布局与重绘属性换成 transform 与 opacity，影子换 drop-shadow' },
+      { k: '离线程', v: '与导航、取数同时发生的动画交给 CSS 或 WAAPI' },
+      { k: '讲证据', v: '区分「代码可确认」与「需要真机录屏」，不拿开发机下结论' },
+    ],
+    prompt: '用 animation-performance 排查这个抽屉动画的掉帧，逐条指出成因与改法。',
+    pairs: ['animate', 'gestures', 'review-animations'],
+    href: 'https://github.com/emilkowalski/skills/blob/main/skills/animation-performance/SKILL.md',
+  },
+  {
     slug: 'animation-vocabulary',
     name: 'animation-vocabulary',
     title: '动效措辞',
@@ -218,6 +290,30 @@ export const skills: Skill[] = [
     prompt: '用 apple-design 的原则重做这个列表到详情的过渡，保证视觉连续性。',
     pairs: ['animate', 'mobile-native', 'animate-expo'],
     href: 'https://github.com/emilkowalski/skills/blob/main/skills/apple-design/SKILL.md',
+  },
+  {
+    slug: 'gestures',
+    name: 'gestures',
+    title: '跟手的手势',
+    group: 'platform',
+    tagline: '手指按住时，界面就是手指',
+    job: '做出 1:1 跟随、松手有物理、能中途接住的手势',
+    summary:
+      '手势只有两个阶段：按住时位置与指针一一对应，不许有缓动与弹簧；松手后交给物理，用带速度的弹簧收尾。多数别扭的手势都错在这条分界上。底部弹层这类成熟交互默认交给 Vaul，不必手搓。',
+    when: [
+      '在做拖拽关闭、侧滑、下拉刷新、长按确认',
+      '手势「不跟手」，或者松开时界面会跳一下',
+      '动画途中抓不住，或者快速一甩被忽略',
+    ],
+    does: [
+      { k: '两段式', v: '按住阶段只写 transform，松手阶段才交给弹簧' },
+      { k: '带速度', v: '松手时把抬手速度喂给弹簧，快甩也能被接住' },
+      { k: '看两值', v: '距离或速度任一过阈值即判定，不只看拖了多远' },
+      { k: '有边界', v: '拖过边界用橡皮筋衰减，不硬停' },
+    ],
+    prompt: '用 gestures 把这个抽屉的拖拽改成 1:1 跟手，并让松手时带上速度。',
+    pairs: ['animate', 'animate-expo', 'animation-performance'],
+    href: 'https://github.com/emilkowalski/skills/blob/main/skills/gestures/SKILL.md',
   },
   {
     slug: 'write-swift',
@@ -290,6 +386,78 @@ export const skills: Skill[] = [
     prompt: '用 prototype 给这个空状态做三个方向，并加一个切换器逐个浏览。',
     pairs: ['apple-design', 'pick-ui-library', 'animation-vocabulary'],
     href: 'https://github.com/emilkowalski/skills/blob/main/skills/prototype/SKILL.md',
+  },
+  {
+    slug: 'break-ui',
+    name: 'break-ui',
+    title: '用最坏数据压测',
+    group: 'craft',
+    tagline: '真实世界不填 Jane Doe',
+    job: '拿真实的最坏情况把界面压出问题，再给每处修法',
+    summary:
+      '演示数据通常被挑过：名字一行放得下、数字不需要分隔符、可选字段全都填了。这个 skill 逐个字段找真实世界里的最坏值，把「演示数据 / 最坏情况」做成开关同屏对比，报告一切被撑破的地方。它不重设计，也不评品味。',
+    when: [
+      '组件在演示数据下完美，上线后被真实用户名撑破',
+      '交付前想确认空列表、超大数字、缺头像这些情况',
+      '要先拿到一份「哪里会坏」的清单，而不是直接改代码',
+    ],
+    does: [
+      { k: '真实值', v: '最坏值要么是现实中会出现的样子，要么是校验规则允许的上限' },
+      { k: '换数据', v: '只改数据入口，不改组件与样式，测的是组件而不是你的手改' },
+      { k: '先报告', v: '列全问题与建议修法后停下，等到明确指令再动手' },
+      { k: '盯小处', v: '不只看长文本，也看孤零零的连字符、缺头像、1 members、空列表' },
+    ],
+    prompt: '用 break-ui 压测这个成员列表，先给我一份会坏在哪里的清单。',
+    pairs: ['emil-design-eng', 'review-animations', 'prototype'],
+    href: 'https://github.com/emilkowalski/skills/blob/main/skills/break-ui/SKILL.md',
+  },
+  {
+    slug: 'learn-taste',
+    name: 'learn-taste',
+    title: '把纠正沉淀成规则',
+    group: 'craft',
+    tagline: '同一次纠正不该发生第二次',
+    job: '把本次会话里的每处纠正写成带原因的规则',
+    summary:
+      '用户每次纠正，都是智能体缺的那部分品味。这个 skill 收集五类信号：明说的纠正、被悄悄改掉的值、反复的微调、被退回的方案、被确认的反常选择，再把每一处写成严格规则，连同原因落进 DESIGN.md、项目 skill 或一条 lint 检查。',
+    when: [
+      '一次会话结束前，想把这次的纠正留给下一次',
+      '同一个问题已经被反复指出多次',
+      '希望把偏好变成能自动检查的规则',
+    ],
+    does: [
+      { k: '五类信号', v: '明说、暗改、反复微调、退回与确认，都算纠正' },
+      { k: '分层次', v: '只写能挡住下个不同组件再犯的那一层，不写成这一处的特例' },
+      { k: '要原因', v: '原因只用用户说过的；推断的原因标出来，先问再写' },
+      { k: '优先检查', v: '能用 lint、令牌或测试抓住的，就配一条检查，而不是只留一句话' },
+    ],
+    prompt: '用 learn-taste 把这次会话里的设计纠正整理成规则，先给我提案。',
+    pairs: ['emil-design-eng', 'review-animations', 'ask-emil'],
+    href: 'https://github.com/emilkowalski/skills/blob/main/skills/learn-taste/SKILL.md',
+  },
+  {
+    slug: 'ask-emil',
+    name: 'ask-emil',
+    title: '该用哪个 skill',
+    group: 'craft',
+    tagline: '不确定时，先问路',
+    job: '按你手头的处境，指出该用的那一个 skill 或那一条链',
+    summary:
+      'skill 多起来之后，新问题变成「现在该叫谁」。它是一张路由：大多数界面工作走一条从想法到上线的主动线，另一些是针对既有代码库的日常维护，还有几个是随时可查的参考。它只给一个建议，不把整张地图铺给你。',
+    when: [
+      '不知道该用哪个 skill',
+      '想确认一条从想法到上线的顺序',
+      '手上是维护任务，不确定算不算动效问题',
+    ],
+    does: [
+      { k: '先读原文', v: '回答前先读对应 SKILL.md，不凭摘要下结论' },
+      { k: '只推一个', v: '给一个 skill 或一条短链，并说明为什么是它' },
+      { k: '分三类', v: '主动线、日常维护、底层参考，先判断你处在哪一类' },
+      { k: '指下一步', v: '顺带说出做完之后该接哪一个' },
+    ],
+    prompt: '用 ask-emil 看我现在的情况：登录页动效太多，该从哪开始？',
+    pairs: ['remove-animations', 'review-animations', 'learn-taste'],
+    href: 'https://github.com/emilkowalski/skills/blob/main/skills/ask-emil/SKILL.md',
   },
   {
     slug: 'mobile-native',
