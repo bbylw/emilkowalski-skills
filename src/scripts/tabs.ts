@@ -27,6 +27,9 @@ function select(root: Root, slug: string, moveFocus: boolean) {
     if (on) panel.removeAttribute('hidden');
     else panel.setAttribute('hidden', '');
   }
+
+  // 面板本身可能是独立的滚动容器：换一个 skill 要从头读，不承接上一块的位置
+  root.querySelector<HTMLElement>('[data-panels]')?.scrollTo({ top: 0 });
 }
 
 function init() {

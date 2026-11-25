@@ -26,7 +26,7 @@ const first = skills[0]!;
     }
   </div>
 
-  <div class="sb__panels">
+  <div class="sb__panels" data-panels>
     {
       skills.map((skill) => (
         <article
@@ -384,31 +384,68 @@ const first = skills[0]!;
   }
 
   @media (min-width: 900px) {
+    /* 桌面端是一个定高的双栏浏览器：20 条索引不再把整块拉长，
+       左右两栏同高，索引与内容各自在框内滚动 */
     .sb {
-      grid-template-columns: 272px 1fr;
-      gap: 32px;
-      align-items: start;
+      grid-template-columns: 272px minmax(0, 1fr);
+      gap: 0;
+      align-items: stretch;
+      height: clamp(560px, 76vh, 700px);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-card);
+      background: var(--surface);
+      box-shadow: var(--shadow-card);
+      overflow: hidden;
     }
 
     /* 桌面端是一条索引，不是一排卡片：去掉边框，靠发丝线与左侧朱红竖条区分 */
     .sb__list {
       display: grid;
+      align-content: start;
       gap: 0;
-      overflow: visible;
-      position: sticky;
-      top: 88px;
+      position: static;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      scrollbar-width: thin;
+      scrollbar-color: var(--line-strong) transparent;
+      padding: 10px 8px;
+      border-right: 1px solid var(--line);
+      background: var(--paper);
+    }
+
+    .sb__panels {
+      min-width: 0;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      scrollbar-width: thin;
+      scrollbar-color: var(--line-strong) transparent;
+    }
+
+    /* 外框已经画了容器，面板退成纯内容区 */
+    .sb__panel {
+      min-height: 100%;
+      padding: 26px 30px 28px;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
     }
 
     .sb__tab {
       border: 0;
       border-top: 1px solid color-mix(in oklab, var(--line) 55%, transparent);
       border-radius: var(--radius-sm);
-      padding: 11px 12px;
+      padding: 9px 12px;
       background: transparent;
     }
 
     .sb__tab:first-child {
       border-top-color: transparent;
+    }
+
+    /* 悬停只给一层浅底：选中态已经很满，悬停不该比它更重 */
+    .sb__tab:hover {
+      background: color-mix(in oklab, var(--sunken) 55%, transparent);
     }
 
     .sb__tab.is-active {
